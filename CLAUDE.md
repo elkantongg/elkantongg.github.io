@@ -10,9 +10,11 @@ Personal developer portfolio for **Elkan Tong Kai En**, BSc Information Systems 
 ## Vision (from Elkan's reference videos)
 Elkan sent four TikTok screen recordings as inspiration. They are not in the repo (D-009), but each is described in detail in `docs/DESIGN.md` → *References*. Read that before any visual work. In short:
 1. **Intro:** "Welcome → to my → Portfolio" blur-in on off-white, then a hard cut to black with a glowing white "Portfolio" and an orange light streak.
-2. **Main idea / overall style:** dark, cinematic, editorial portfolio. Huge condensed uppercase headlines with a red second line, red numbering, red quote card, red-rail timeline, "Let's work together" close.
+2. **Main idea / overall style:** dark, cinematic, editorial portfolio. Huge condensed uppercase headlines with a red second line, red numbering, red-rail timeline, "Let's work together" close.
 3. **Skills:** isometric 3D keyboard of chunky, glossy, rounded keycaps with tech logos; pressing a key shows the skill name and a witty line. Elkan explicitly liked this one.
-4. **Main idea, motion:** same site as #2, showing how alive it should feel: drifting particles, giant red background word in the hero, headlines rising in, wipes, scroll-filled rails. **Plenty of purposeful animation is expected; a static page misses the brief.**
+4. **Main idea, motion:** same site as #2, showing how alive it should feel. **The tiny cursors are builders that "build the portfolio"** (D-017): they swarm in, drag blue wireframe frames, then content appears; at the end they circle in a ring (D-019). Also headlines rising in, wipes, scroll-filled rails. **Plenty of purposeful animation is expected; a static page misses the brief.**
+
+Elkan's later direction (D-019): **as minimalist as possible**. Short copy about him (tech, finance, fitness), no decorative clutter (no hero background word, no stats strip/quote card), few full stops in headings. A refresh always replays everything from the top (D-018).
 
 No résumé on the site (D-014).
 

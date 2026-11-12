@@ -12,8 +12,9 @@ index.html          single page; all sections in order
 css/style.css       one stylesheet, sectioned with banner comments (tokens → intro → nav → shared → sections → responsive → reduced motion)
 js/boot.js          classic script in <head>: adds .js, decides intro (.no-intro / .intro-active), 4.2s failsafe
 js/main.js          module: adds .ready; nav, scroll spy, progress, reveals, counters, contact, skills keyboard, sound
-js/motion.js        module: word-split headlines, scrubbed lede, .rail fills, hero parallax, scroll-reactive marquee
-js/particles.js     module: ambient canvas particle field (skipped for reduced motion)
+js/motion.js        module: word-split headlines, .scrub paragraphs, .rail fills, hero exit parallax
+assets/work/        project screenshots (JPEG, 1280×720, frames from Elkan's demo videos)
+js/builders.js      module: builder-cursor overlay; returns request(el, onDone) used by the reveal observer (null for reduced motion)
 js/icons.js         GENERATED — `export const ICONS = { id: svgPathD }`; do not hand-edit except `sql` (custom)
 assets/fonts/       anton-400.woff2, inter-var.woff2
 docs/               documentation
@@ -35,7 +36,7 @@ docs/               documentation
 - **TODO with hosting decision:** real HTTP security headers (CSP incl. `frame-ancestors 'self'`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, HSTS). The page no longer iframes anything, so `X-Frame-Options: DENY` / `frame-ancestors 'none'` is fine; meta CSP now has `frame-src 'none'`.
 
 ## Performance
-- ~70KB fonts preloaded; no images except icons (inline SVG). No embeds. One fixed canvas for particles (DPR capped at 2, paused when the tab is hidden).
+- ~70KB fonts preloaded; no images except icons (inline SVG). No embeds. One fixed canvas for the builder cursors (DPR capped at 2, paused when the tab is hidden).
 - Animations use `transform`/`opacity`/`filter` only.
 
 ## Run locally

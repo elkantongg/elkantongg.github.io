@@ -1,4 +1,4 @@
-/* Scroll-driven motion: split headlines, scrubbed paragraph, rails, hero parallax, marquee.
+/* Scroll-driven motion: split headlines, scrubbed paragraphs, rails, hero exit parallax.
    Everything degrades to static, readable content (no JS / reduced motion). */
 
 const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
@@ -51,11 +51,7 @@ export function initMotion(reducedMotion) {
   const rails = $$(".rail").map((el) => ({ el, items: $$(":scope > li", el) }));
   const hero = document.querySelector(".hero");
   const heroInner = document.querySelector("[data-hero-exit]");
-  const ghost = document.querySelector("[data-speed-x]");
-  const ghostSpeed = ghost ? Number(ghost.dataset.speedX) || 0 : 0;
   const still = () => reducedMotion.matches;
-
-  let mx = 0, my = 0; // pointer offset from centre, -1..1 (hero only)
 
   function update() {
     const vh = window.innerHeight;
@@ -80,9 +76,6 @@ export function initMotion(reducedMotion) {
         heroInner.style.transform = `translate3d(0, ${(y * 0.32).toFixed(1)}px, 0)`;
         heroInner.style.opacity = String(1 - p * 1.1);
       }
-      if (ghost) {
-        ghost.style.transform = `translate3d(${(y * ghostSpeed + mx * -24).toFixed(1)}px, ${(y * 0.12 + my * -14).toFixed(1)}px, 0)`;
-      }
     }
   }
 
@@ -90,40 +83,6 @@ export function initMotion(reducedMotion) {
   const request = () => { if (!ticking) { ticking = true; requestAnimationFrame(() => { ticking = false; update(); }); } };
   window.addEventListener("scroll", request, { passive: true });
   window.addEventListener("resize", request, { passive: true });
-  if (hero) {
-    hero.addEventListener("pointermove", (e) => {
-      if (e.pointerType !== "mouse") return;
-      mx = (e.clientX / window.innerWidth) * 2 - 1;
-      my = (e.clientY / window.innerHeight) * 2 - 1;
-      request();
-    });
-  }
   update();
-
-  /* Marquee: drifts constantly, speeds up with scroll velocity and follows scroll direction. */
-  const track = document.querySelector(".marquee__track");
-  if (track && !still()) {
-    track.classList.add("is-js");
-    let x = 0, dir = 1, boost = 0, lastY = window.scrollY, last = performance.now(), running = false;
-    const BASE = 55; // px per second
-    const frame = (now) => {
-      if (!running) return;
-      const dt = Math.min(0.05, (now - last) / 1000);
-      last = now;
-      const dy = window.scrollY - lastY;
-      lastY = window.scrollY;
-      if (dy) { dir = dy > 0 ? 1 : -1; boost = Math.min(900, boost + Math.abs(dy) * 6); }
-      boost *= 0.92;
-      const half = track.scrollWidth / 2;
-      x -= (BASE + boost) * dir * dt;
-      if (x <= -half) x += half;
-      if (x > 0) x -= half;
-      track.style.transform = `translate3d(${x.toFixed(1)}px, 0, 0)`;
-      requestAnimationFrame(frame);
-    };
-    new IntersectionObserver(([entry]) => {
-      running = entry.isIntersecting;
-      if (running) { last = performance.now(); lastY = window.scrollY; requestAnimationFrame(frame); }
-    }).observe(track.parentElement);
-  }
+  // Marquee: constant-speed CSS animation (style.css), not tied to scroll.
 }

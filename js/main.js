@@ -1,6 +1,6 @@
 import { ICONS } from "./icons.js";
 import { initMotion } from "./motion.js";
-import { initParticles } from "./particles.js";
+import { initBuilders } from "./builders.js";
 
 const root = document.documentElement;
 root.classList.add("ready");
@@ -95,18 +95,23 @@ function countUp(dd) {
   };
   requestAnimationFrame(step);
 }
+function reveal(el) {
+  el.classList.add("in");
+  const dd = el.querySelector("dd[data-count]");
+  if (dd) countUp(dd);
+}
+const build = initBuilders(reducedMotion); // cursor crew frames each element before it appears
 const revealer = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {
     if (!entry.isIntersecting) return;
-    entry.target.classList.add("in");
-    const dd = entry.target.querySelector("dd[data-count]");
-    if (dd) countUp(dd);
-    revealer.unobserve(entry.target);
+    const el = entry.target;
+    revealer.unobserve(el);
+    if (!build) { reveal(el); return; }
+    build(el, () => { el.style.setProperty("--rd", "0s"); reveal(el); });
   });
-}, { threshold: 0.12, rootMargin: "0px 0px -6% 0px" });
+}, { threshold: 0, rootMargin: "0px 0px -10% 0px" }); // 0: work rows start fully clipped (zero visible area)
 initMotion(reducedMotion); // splits headlines into words before they're observed
 $$(".reveal").forEach((el) => revealer.observe(el));
-initParticles(reducedMotion);
 
 /* -------------------------------------------------------------- contact */
 (function contact() {
@@ -308,31 +313,36 @@ const LAYERS = 12;
     if (audio && audio.state === "suspended") audio.resume();
     if (soundOn) playClick();
   });
+  /* Mechanical keycap: a crisp switch click, the plastic "clack" of the cap bottoming out,
+     a short body resonance, then a softer release click. Built from filtered noise bursts. */
+  let noiseBuf = null;
+  function burst(t, { type, freq, q = 1, gain, dur }) {
+    const src = audio.createBufferSource();
+    src.buffer = noiseBuf;
+    const f = audio.createBiquadFilter();
+    f.type = type;
+    f.frequency.value = freq;
+    f.Q.value = q;
+    const g = audio.createGain();
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(gain, t + 0.0015);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    src.connect(f).connect(g).connect(audio.destination);
+    src.start(t, Math.random() * 0.5);
+    src.stop(t + dur + 0.01);
+  }
   function playClick() {
     if (!soundOn || !audio) return;
-    const t = audio.currentTime;
-    const len = Math.floor(audio.sampleRate * 0.035);
-    const buf = audio.createBuffer(1, len, audio.sampleRate);
-    const data = buf.getChannelData(0);
-    for (let n = 0; n < len; n++) data[n] = (Math.random() * 2 - 1) * Math.pow(1 - n / len, 4);
-    const noise = audio.createBufferSource();
-    noise.buffer = buf;
-    const bp = audio.createBiquadFilter();
-    bp.type = "bandpass";
-    bp.frequency.value = 2400 + Math.random() * 600;
-    bp.Q.value = 1.2;
-    const g = audio.createGain();
-    g.gain.value = 0.35;
-    noise.connect(bp).connect(g).connect(audio.destination);
-    const osc = audio.createOscillator();
-    const og = audio.createGain();
-    osc.frequency.setValueAtTime(170, t);
-    osc.frequency.exponentialRampToValueAtTime(70, t + 0.06);
-    og.gain.setValueAtTime(0.18, t);
-    og.gain.exponentialRampToValueAtTime(0.001, t + 0.07);
-    osc.connect(og).connect(audio.destination);
-    noise.start(t);
-    osc.start(t);
-    osc.stop(t + 0.08);
+    if (!noiseBuf) {
+      noiseBuf = audio.createBuffer(1, audio.sampleRate, audio.sampleRate);
+      const d = noiseBuf.getChannelData(0);
+      for (let n = 0; n < d.length; n++) d[n] = Math.random() * 2 - 1;
+    }
+    const t = audio.currentTime + 0.005;
+    const v = 0.85 + Math.random() * 0.3; // no two presses identical
+    burst(t, { type: "highpass", freq: 4800, q: 0.7, gain: 0.32 * v, dur: 0.012 });          // switch click
+    burst(t + 0.006, { type: "bandpass", freq: 1900 * v, q: 6, gain: 0.5 * v, dur: 0.035 });   // keycap clack
+    burst(t + 0.006, { type: "lowpass", freq: 480, q: 1.4, gain: 0.55 * v, dur: 0.05 });       // board thock
+    burst(t + 0.09, { type: "bandpass", freq: 2600 * v, q: 4, gain: 0.16 * v, dur: 0.02 });    // release
   }
 })();

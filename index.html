@@ -41,13 +41,13 @@
   <div class="progress" aria-hidden="true"><span id="progress-bar"></span></div>
 
   <header class="nav" id="nav">
-    <a class="nav__logo" href="#top" aria-label="Elkan Tong, back to top">ELKAN<span class="accent">.</span></a>
+    <a class="nav__logo" href="https://www.instagram.com/elkantongg/" target="_blank" rel="noopener noreferrer" aria-label="Elkan on Instagram, @elkantongg">@elkantongg</a>
     <button class="nav__toggle" type="button" id="nav-toggle" aria-expanded="false" aria-controls="nav-links">
       <span class="sr-only">Menu</span><span class="nav__bars" aria-hidden="true"></span>
     </button>
     <nav aria-label="Primary">
       <ul class="nav__links" id="nav-links">
-        <li><a href="#idea">Idea</a></li>
+        <li><a href="#about">About</a></li>
         <li><a href="#work">Work</a></li>
         <li><a href="#skills">Skills</a></li>
         <li><a href="#journey">Journey</a></li>
@@ -59,7 +59,6 @@
   <main id="main">
     <!-- HERO -->
     <section class="hero" id="top" aria-labelledby="hero-title">
-      <p class="hero__ghost" aria-hidden="true" data-speed-x="-0.35"><span>Portfolio</span></p>
       <div class="hero__grid" aria-hidden="true">
         <span class="cross c1"></span><span class="cross c2"></span><span class="cross c3"></span>
         <span class="cross c4"></span><span class="cross c5"></span><span class="cross c6"></span>
@@ -68,7 +67,7 @@
         <p class="hero__hello"><span>Hello, I'm</span></p>
         <h1 class="hero__title" id="hero-title">
           <span class="hero__row"><span>Elkan</span></span>
-          <span class="hero__row"><span>Tong<span class="accent">.</span></span></span>
+          <span class="hero__row"><span>Tong</span></span>
         </h1>
         <div class="hero__bottom">
           <p class="hero__lede">Information Systems student at <strong>SMU</strong>, building full-stack products that take the friction out of everyday coordination.</p>
@@ -83,7 +82,7 @@
           <li><span>Shipped in 2026</span>4 products</li>
         </ul>
       </div>
-      <a class="hero__scroll" href="#idea" aria-label="Scroll to the next section"><span></span></a>
+      <a class="hero__scroll" href="#about" aria-label="Scroll to the next section"><span></span></a>
     </section>
 
     <div class="marquee" aria-label="Built at: Hyperbloom Hackathon, Daytona Hackathon, PayPal Hackathon, SMU">
@@ -93,36 +92,43 @@
       </div>
     </div>
 
-    <!-- 2. MAIN IDEA -->
-    <section class="section idea" id="idea" aria-labelledby="idea-title">
+    <!-- 2. ABOUT -->
+    <section class="section about" id="about" aria-labelledby="about-title">
       <div class="wrap">
-        <p class="label reveal">01 / The idea</p>
-        <h2 class="display reveal" id="idea-title">Not just code.<br><span class="accent">What it fixes.</span></h2>
-        <p class="idea__lede scrub">Every build starts with a real annoyance: a group chat that can't pick a place, a family juggling care schedules, an event losing its venue, a merchant drowning in disputes. I find that friction, model it properly, and ship something people can actually use.</p>
+        <p class="label reveal">01 / About me</p>
+        <h2 class="display reveal" id="about-title">Curious builder<br><span class="accent">Disciplined by habit</span></h2>
+        <p class="about__lede reveal">I like turning everyday annoyances into things people actually use. Away from the keyboard, it's markets and training.</p>
 
-        <div class="idea__grid">
-          <div>
-            <p class="idea__sub reveal">From friction to fix</p>
-            <ol class="process rail" aria-label="How I build">
-              <li class="reveal"><span class="process__n">01</span><div><h3>The problem</h3><p>Start from what people actually struggle with, not from the tech.</p></div></li>
-              <li class="reveal"><span class="process__n">02</span><div><h3>The model</h3><p>Get the data right: graphs, schedules, constraints, money flows.</p></div></li>
-              <li class="reveal"><span class="process__n">03</span><div><h3>The build</h3><p>Full stack, end to end. Vue on the front, Python or JS behind it.</p></div></li>
-              <li class="reveal"><span class="process__n">04</span><div><h3>The proof</h3><p>Tests and checks before demos: 55 automated tests, 35 validation checks.</p></div></li>
-            </ol>
-          </div>
-          <figure class="quote reveal">
-            <span class="quote__mark" aria-hidden="true">“</span>
-            <blockquote><p>Find the friction.<br>Ship the fix.</p></blockquote>
-            <figcaption>How I build</figcaption>
-          </figure>
-        </div>
-
-        <dl class="stats" aria-label="By the numbers">
-          <div class="reveal"><dt>Products built in 2026</dt><dd data-count="4">4</dd></div>
-          <div class="reveal"><dt>Hackathons</dt><dd data-count="3">3</dd></div>
-          <div class="reveal"><dt>Singapore places searchable</dt><dd data-count="19000" data-prefix="~">~19,000</dd></div>
-          <div class="reveal"><dt>Camp participants led</dt><dd data-count="300" data-prefix="~">~300</dd></div>
-        </dl>
+        <ul class="likes">
+          <li class="like reveal" data-build="tech">
+            <div class="like__art art-code" aria-hidden="true">
+              <span></span><span></span><span></span><span></span><span></span><i></i>
+            </div>
+            <h3>Building</h3>
+            <p>Full-stack products, mostly at hackathons. Four shipped in 2026.</p>
+          </li>
+          <li class="like reveal" data-build="finance">
+            <div class="like__art art-chart" aria-hidden="true">
+              <svg viewBox="0 0 200 90" preserveAspectRatio="none" focusable="false">
+                <path class="art-chart__base" d="M0 89.5H200"/>
+                <path class="art-chart__line" pathLength="1" d="M0 70 L18 62 L30 66 L46 48 L60 54 L74 40 L88 46 L104 30 L118 38 L132 24 L148 32 L162 18 L178 26 L200 10"/>
+              </svg>
+              <i></i>
+            </div>
+            <h3>Markets</h3>
+            <p>Reading FX with a trading team, and teaching what I learn to a community of 175.</p>
+          </li>
+          <li class="like reveal" data-build="fitness">
+            <div class="like__art art-pulse" aria-hidden="true">
+              <svg viewBox="0 0 200 90" preserveAspectRatio="none" focusable="false">
+                <path class="art-pulse__base" d="M0 50 H60 L70 50 L78 20 L88 78 L96 38 L104 50 H200"/>
+                <path class="art-pulse__beat" pathLength="1" d="M0 50 H60 L70 50 L78 20 L88 78 L96 38 L104 50 H200"/>
+              </svg>
+            </div>
+            <h3>Training</h3>
+            <p>Two years as a police field instructor, taking failing squads to a 100% IPPT pass.</p>
+          </li>
+        </ul>
       </div>
     </section>
 
@@ -148,6 +154,7 @@
                 <span class="project__plus" aria-hidden="true"></span>
               </summary>
               <div class="project__body">
+                <img class="project__shot" src="assets/work/lepak.jpg" width="1280" height="720" loading="lazy" decoding="async" alt="Lepak: the 'Paint when you're free' availability grid on a phone">
                 <div>
                   <p>A full-stack group planning app that removes the back-and-forth of organising outings: shared availability, venue voting and automated itineraries in one place.</p>
                   <p>Fuzzy place search over ~19,000 Singapore locations, with real-time sync so everyone sees the plan change as it happens.</p>
@@ -158,6 +165,10 @@
                   <li><b>Live</b>real-time sync</li>
                 </ul>
                 <ul class="tags"><li>JavaScript</li><li>Python</li><li>PostgreSQL</li><li>Supabase</li></ul>
+                <p class="project__links">
+                  <a href="https://lepak-hyperbloom.vercel.app" target="_blank" rel="noopener noreferrer">Live app <span aria-hidden="true">↗</span></a>
+                  <a href="https://github.com/elkantongg/Lepak" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+                </p>
               </div>
             </details>
           </li>
@@ -198,6 +209,7 @@
                 <span class="project__plus" aria-hidden="true"></span>
               </summary>
               <div class="project__body">
+                <img class="project__shot" src="assets/work/wayfound.jpg" width="1280" height="720" loading="lazy" decoding="async" alt="Wayfound title card: autonomous recovery that accounts for everyone">
                 <div>
                   <p>An AI-powered event recovery platform. When a venue is disrupted, it finds the affected sessions and generates feasible reassignment plans.</p>
                   <p>Neo4j models the event's dependencies, and a constraint-aware solver keeps venue changes to a minimum.</p>
@@ -208,6 +220,9 @@
                   <li><b>Graph</b>dependency model</li>
                 </ul>
                 <ul class="tags"><li>Vue 3</li><li>FastAPI</li><li>Neo4j</li><li>Daytona</li><li>Qwen</li></ul>
+                <p class="project__links">
+                  <a href="https://github.com/elkantongg/Wayfound" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+                </p>
               </div>
             </details>
           </li>
@@ -223,6 +238,7 @@
                 <span class="project__plus" aria-hidden="true"></span>
               </summary>
               <div class="project__body">
+                <img class="project__shot" src="assets/work/resolveos.jpg" width="1280" height="720" loading="lazy" decoding="async" alt="ResolveOS landing page: two sides, one conversation">
                 <div>
                   <p>An AI-assisted dispute resolution platform that turns messy buyer–merchant disputes into structured workflows with settlement recommendations.</p>
                   <p>An agentic prioritisation engine weighs financial exposure, dispute stage and pending actions to surface urgent cases and recommend next steps.</p>
@@ -233,6 +249,10 @@
                   <li><b>Guided</b>settlement workflows</li>
                 </ul>
                 <ul class="tags"><li>Vue 3</li><li>TypeScript</li><li>Vite</li><li>PayPal Sandbox</li></ul>
+                <p class="project__links">
+                  <a href="https://resolveos-paypal.onrender.com" target="_blank" rel="noopener noreferrer">Live demo <span aria-hidden="true">↗</span></a>
+                  <a href="https://github.com/elkantongg/ResolveOS-paypal" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+                </p>
               </div>
             </details>
           </li>
@@ -247,7 +267,6 @@
         <div class="skills__grid">
           <div class="skills__info">
             <h2 class="skills__title reveal" id="skills-title">Skills</h2>
-            <p class="skills__hint reveal">(hint: press a key)</p>
             <div class="skill-card" id="skill-card" aria-live="polite">
               <p class="skill-card__name" id="skill-name">Pick a key</p>
               <p class="skill-card__line" id="skill-line">Tap a keycap, or type on your keyboard. Every key is something I've built with.</p>
@@ -269,8 +288,8 @@
         <p class="label reveal">04 / The journey</p>
         <div class="resume__grid">
           <div class="resume__side">
-            <h2 class="display reveal" id="resume-title">The journey.<br><span class="accent">So far.</span></h2>
-            <p class="resume__lede reveal">From leading recruits through fitness tests to leading teams through hackathons.</p>
+            <h2 class="display reveal" id="resume-title">The journey<br><span class="accent">So far</span></h2>
+            <p class="resume__lede reveal">A mix of Tech, Finance, and Fitness. More to come</p>
             <dl class="facts reveal">
               <div><dt>Education</dt><dd>BSc Information Systems<br>Singapore Management University</dd></div>
               <div><dt>Languages</dt><dd>Python, JavaScript, TypeScript, HTML/CSS, SQL</dd></div>
@@ -320,7 +339,7 @@
     <section class="section contact" id="contact" aria-labelledby="contact-title">
       <div class="wrap">
         <p class="label reveal">05 / Your next build</p>
-        <h2 class="contact__title display-split reveal" id="contact-title">Let's work<br>together<span class="accent">.</span></h2>
+        <h2 class="contact__title display-split reveal" id="contact-title">Let's work<br>together</h2>
         <p class="contact__lede reveal">A role, a hackathon team, or an idea that needs building? My inbox is open.</p>
         <div class="contact__actions reveal">
           <a class="btn btn--red btn--lg" id="email-link" href="#contact" data-u="elkantong" data-d="gmail.com">

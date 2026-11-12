@@ -9,14 +9,19 @@ Source of truth for all visible copy. Facts come from **Elkan's résumé (PDF, p
 - **Email:** elkantong@gmail.com (shown on site, obfuscated in HTML)
 - **LinkedIn:** https://www.linkedin.com/in/elkan-tong-874542372
 - **Phone:** on résumé — OK to show (D-013). Not shown on the site (résumé PDF removed, D-014)
-- **GitHub profile link:** TBD (repo owner is `elkantongg`; not yet confirmed for display)
-- **Hero buttons:** "See the work" · "Get in touch" (replaced "Download résumé", D-014)
-- **Journey section** *(Claude wording)*: heading "The journey. / So far."; lede "From leading recruits through fitness tests to leading teams through hackathons."
+- **Instagram:** @elkantongg → https://www.instagram.com/elkantongg/ (Elkan, 2026-11-12). Shown as the top-left logo
+- **GitHub:** `elkantongg`; project repos linked from Work (Elkan, 2026-11-12). Profile link itself not shown
+- **Hero:** "Hello, I'm / Elkan Tong" (no full stop, no background word — Elkan, 2026-11-12). Buttons "See the work" · "Get in touch"
 - **Hero line** *(Claude wording)*: "Information Systems student at SMU, building full-stack products that take the friction out of everyday coordination."
-- **Positioning** *(Claude wording)*: "Not just code. What it fixes." / quote card "Find the friction. Ship the fix."
+- **About (01)** *(Claude wording — headline and lede need Elkan's review; personality traits are his to supply)*: "Curious builder / Disciplined by habit"; "I like turning everyday annoyances into things people actually use. Away from the keyboard, it's markets and training." Tiles: **Building** "Full-stack products, mostly at hackathons. Four shipped in 2026." · **Markets** "Reading FX with a trading team, and teaching what I learn to a community of 175." · **Training** "Two years as a police field instructor, taking failing squads to a 100% IPPT pass." Replaced "Not just code. What it fixes.", the process list, quote card and stats strip (Elkan: too lengthy, not relevant).
+- **Journey section**: heading "The journey / So far" (no full stops); lede "A mix of Tech, Finance, and Fitness. More to come" (Elkan's wording).
+- **Contact**: "Let's work together" (no full stop).
+- **Skills**: no "(hint: press a key)".
 
 ## Featured projects
-Order on site: 01 Lepak · 02 Care+ · 03 Wayfound · 04 ResolveOS (résumé order). Links for all: **TBD** (no repo/demo URLs provided).
+Order on site: 01 Lepak · 02 Care+ · 03 Wayfound · 04 ResolveOS (résumé order).
+Screenshots: frames from Elkan's demo videos in `~/Desktop/Hackathons` → `assets/work/*.jpg` (ResolveOS cropped to exclude the webcam). Care+: no video or repo → no image or link.
+Links (from GitHub, 2026-11-12): Lepak live https://lepak-hyperbloom.vercel.app + repo · Wayfound repo only (README demo URL is a temporary Daytona proxy) · ResolveOS live https://resolveos-paypal.onrender.com (from README; timed out when checked, likely a sleeping free instance) + repo.
 
 | # | Project | Context · Date | Stack | Résumé facts |
 |---|---|---|---|---|
@@ -46,5 +51,3 @@ Achievements/awards for these projects: TBD (none on résumé).
 
 Keycap one-liners live in `js/main.js` `SKILLS` *(Claude wording, all tied to résumé facts)*. Skills with no project usage on the résumé (Bootstrap 5, SQLite, Vercel) show no "used in" tags.
 
-## Stats strip
-4 products built in 2026 · 3 hackathons · ~19,000 Singapore places searchable · ~300 camp participants led.

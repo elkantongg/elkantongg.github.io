@@ -4,6 +4,17 @@
   var root = document.documentElement;
   root.classList.add("js");
 
+  // A refresh replays everything from the top: no restored scroll position, no #anchor jump.
+  // (Fresh visits to a #link still land on that section.)
+  try {
+    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+    var nav = performance.getEntriesByType("navigation")[0];
+    if (nav && nav.type === "reload") {
+      if (location.hash) history.replaceState(null, "", location.pathname + location.search);
+      window.scrollTo(0, 0);
+    }
+  } catch (e) {}
+
   var skip = false;
   try { if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) skip = true; } catch (e) {}
 
