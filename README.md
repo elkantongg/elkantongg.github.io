@@ -21,8 +21,9 @@ index.html        page markup (all sections)
 css/style.css     all styles
 js/boot.js        runs before paint: intro gating + failsafe
 js/main.js        interactions: nav, reveals, counters, skills keyboard, contact
-js/motion.js      scroll-driven motion (headlines, rails, parallax, marquee)
-js/particles.js   ambient particle canvas
+js/motion.js      scroll-driven motion (headlines, rails, parallax)
+js/builders.js    builder cursors that build every element (canvas overlay)
+js/typer.js       types text into its frame during a build
 js/icons.js       generated brand icon paths (Simple Icons, CC0)
 assets/fonts/     self-hosted Anton + Inter (OFL)
 docs/             project documentation (start at CLAUDE.md)
