@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; media-src 'none'; object-src 'none'; frame-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#0a0a0c">
+  <title>Elkan Tong · Portfolio</title>
+  <meta name="description" content="Elkan Tong — Information Systems student at SMU building full-stack products: Lepak, Care+, Wayfound and ResolveOS.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Elkan Tong · Portfolio">
+  <meta property="og:description" content="Not just code. What it fixes. Full-stack builds by an SMU Information Systems student.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/fonts/anton-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/boot.js"></script>
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- 1. INTRO -->
+  <div class="intro" id="intro" aria-hidden="true">
+    <div class="intro__stage">
+      <span class="intro__word intro__welcome">Welcome</span>
+      <span class="intro__line">
+        <span class="intro__to">to</span>
+        <span class="intro__my">my</span>
+        <span class="intro__portfolio">Portfolio</span>
+      </span>
+    </div>
+    <svg class="intro__streak" viewBox="0 0 1200 200" preserveAspectRatio="none" focusable="false">
+      <path pathLength="1" d="M-20 120 C 180 120, 300 92, 430 104 S 560 160, 640 132 S 820 96, 1220 112"/>
+    </svg>
+    <button class="intro__skip" type="button" id="intro-skip">Skip intro</button>
+  </div>
+
+  <div class="progress" aria-hidden="true"><span id="progress-bar"></span></div>
+
+  <header class="nav" id="nav">
+    <a class="nav__logo" href="#top" aria-label="Elkan Tong, back to top">ELKAN<span class="accent">.</span></a>
+    <button class="nav__toggle" type="button" id="nav-toggle" aria-expanded="false" aria-controls="nav-links">
+      <span class="sr-only">Menu</span><span class="nav__bars" aria-hidden="true"></span>
+    </button>
+    <nav aria-label="Primary">
+      <ul class="nav__links" id="nav-links">
+        <li><a href="#idea">Idea</a></li>
+        <li><a href="#work">Work</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#resume">Résumé</a></li>
+        <li><a class="nav__cta" href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main">
+    <!-- HERO -->
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="hero__grid" aria-hidden="true">
+        <span class="cross c1"></span><span class="cross c2"></span><span class="cross c3"></span>
+        <span class="cross c4"></span><span class="cross c5"></span><span class="cross c6"></span>
+      </div>
+      <div class="wrap hero__inner">
+        <p class="hero__hello"><span>Hello, I'm</span></p>
+        <h1 class="hero__title" id="hero-title">
+          <span class="hero__row"><span>Elkan</span></span>
+          <span class="hero__row"><span>Tong<span class="accent">.</span></span></span>
+        </h1>
+        <div class="hero__bottom">
+          <p class="hero__lede">Information Systems student at <strong>SMU</strong>, building full-stack products that take the friction out of everyday coordination.</p>
+          <div class="hero__actions">
+            <a class="btn btn--red" href="#work">See the work <span aria-hidden="true">→</span></a>
+            <a class="btn btn--ghost" href="assets/docs/Elkan-Tong-Resume.pdf" download>Download résumé</a>
+          </div>
+        </div>
+        <ul class="hero__meta" aria-label="Quick facts">
+          <li><span>Based in</span>Singapore</li>
+          <li><span>Studying</span>BSc Information Systems</li>
+          <li><span>Shipped in 2026</span>4 products</li>
+        </ul>
+      </div>
+      <a class="hero__scroll" href="#idea" aria-label="Scroll to the next section"><span></span></a>
+    </section>
+
+    <div class="marquee" aria-label="Built at: Hyperbloom Hackathon, Daytona Hackathon, PayPal Hackathon, SMU">
+      <div class="marquee__track" aria-hidden="true">
+        <span>Built at</span><i>✦</i><span>Hyperbloom Hackathon</span><i>✦</i><span>Daytona Hackathon</span><i>✦</i><span>PayPal Hackathon</span><i>✦</i><span>SMU · Web Application 2</span><i>✦</i>
+        <span>Built at</span><i>✦</i><span>Hyperbloom Hackathon</span><i>✦</i><span>Daytona Hackathon</span><i>✦</i><span>PayPal Hackathon</span><i>✦</i><span>SMU · Web Application 2</span><i>✦</i>
+      </div>
+    </div>
+
+    <!-- 2. MAIN IDEA -->
+    <section class="section idea" id="idea" aria-labelledby="idea-title">
+      <div class="wrap">
+        <p class="label reveal">01 / The idea</p>
+        <div class="idea__grid">
+          <div>
+            <h2 class="display reveal" id="idea-title">Not just code.<br><span class="accent">What it fixes.</span></h2>
+            <p class="idea__lede reveal">Every build starts with a real annoyance: a group chat that can't pick a place, a family juggling care schedules, an event losing its venue, a merchant drowning in disputes. I find that friction, model it properly, and ship something people can actually use.</p>
+          </div>
+          <figure class="quote reveal">
+            <span class="quote__mark" aria-hidden="true">“</span>
+            <blockquote><p>Find the friction.<br>Ship the fix.</p></blockquote>
+            <figcaption>How I build</figcaption>
+          </figure>
+        </div>
+
+        <ol class="process" aria-label="How I build">
+          <li class="reveal"><span class="process__n">01</span><h3>The problem</h3><p>Start from what people actually struggle with, not from the tech.</p></li>
+          <li class="reveal"><span class="process__n">02</span><h3>The model</h3><p>Get the data right: graphs, schedules, constraints, money flows.</p></li>
+          <li class="reveal"><span class="process__n">03</span><h3>The build</h3><p>Full stack, end to end. Vue on the front, Python or JS behind it.</p></li>
+          <li class="reveal"><span class="process__n">04</span><h3>The proof</h3><p>Tests and checks before demos: 55 automated tests, 35 validation checks.</p></li>
+        </ol>
+
+        <dl class="stats" aria-label="By the numbers">
+          <div class="reveal"><dt>Products built in 2026</dt><dd data-count="4">4</dd></div>
+          <div class="reveal"><dt>Hackathons</dt><dd data-count="3">3</dd></div>
+          <div class="reveal"><dt>Singapore places searchable</dt><dd data-count="19000" data-prefix="~">~19,000</dd></div>
+          <div class="reveal"><dt>Camp participants led</dt><dd data-count="300" data-prefix="~">~300</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- WORK -->
+    <section class="section work" id="work" aria-labelledby="work-title">
+      <div class="wrap">
+        <p class="label reveal">02 / The work</p>
+        <div class="work__head">
+          <h2 class="display reveal" id="work-title">The work.<br><span class="accent">The builds.</span></h2>
+          <p class="work__count reveal" aria-hidden="true">04<sup>+</sup></p>
+        </div>
+
+        <ul class="projects">
+          <li class="project reveal">
+            <details>
+              <summary>
+                <span class="project__n">01</span>
+                <span class="project__main">
+                  <span class="project__name">Lepak</span>
+                  <span class="project__pitch">Group outings, minus the group-chat chaos.</span>
+                </span>
+                <span class="project__when">Hyperbloom Hackathon<span class="project__date">Oct 2026</span></span>
+                <span class="project__plus" aria-hidden="true"></span>
+              </summary>
+              <div class="project__body">
+                <div>
+                  <p>A full-stack group planning app that removes the back-and-forth of organising outings: shared availability, venue voting and automated itineraries in one place.</p>
+                  <p>Fuzzy place search over ~19,000 Singapore locations, with real-time sync so everyone sees the plan change as it happens.</p>
+                </div>
+                <ul class="project__facts">
+                  <li><b>~19k</b>places searchable</li>
+                  <li><b>55</b>automated tests</li>
+                  <li><b>Live</b>real-time sync</li>
+                </ul>
+                <ul class="tags"><li>JavaScript</li><li>Python</li><li>PostgreSQL</li><li>Supabase</li></ul>
+              </div>
+            </details>
+          </li>
+          <li class="project reveal">
+            <details>
+              <summary>
+                <span class="project__n">02</span>
+                <span class="project__main">
+                  <span class="project__name">Care+</span>
+                  <span class="project__pitch">One home base for family caregiving.</span>
+                </span>
+                <span class="project__when">SMU · Web Application 2<span class="project__date">Aug – Nov 2026</span></span>
+                <span class="project__plus" aria-hidden="true"></span>
+              </summary>
+              <div class="project__body">
+                <div>
+                  <p>A responsive elderly-care platform, built in a team of 5, that brings appointments, schedules and care responsibilities together for families and caregivers.</p>
+                  <p>I built accessible, senior-facing interfaces and wired shared calendars into the team's FastAPI backend and Supabase.</p>
+                </div>
+                <ul class="project__facts">
+                  <li><b>5</b>person team</li>
+                  <li><b>A11y</b>senior-first UI</li>
+                  <li><b>Shared</b>family calendars</li>
+                </ul>
+                <ul class="tags"><li>Vue 3</li><li>TypeScript</li><li>FastAPI</li><li>Supabase</li></ul>
+              </div>
+            </details>
+          </li>
+          <li class="project reveal">
+            <details>
+              <summary>
+                <span class="project__n">03</span>
+                <span class="project__main">
+                  <span class="project__name">Wayfound</span>
+                  <span class="project__pitch">When the venue falls through, the event doesn't.</span>
+                </span>
+                <span class="project__when">Daytona Hackathon<span class="project__date">Oct 2026</span></span>
+                <span class="project__plus" aria-hidden="true"></span>
+              </summary>
+              <div class="project__body">
+                <div>
+                  <p>An AI-powered event recovery platform. When a venue is disrupted, it finds the affected sessions and generates feasible reassignment plans.</p>
+                  <p>Neo4j models the event's dependencies, and a constraint-aware solver keeps venue changes to a minimum.</p>
+                </div>
+                <ul class="project__facts">
+                  <li><b>35</b>validation checks</li>
+                  <li><b>0</b>unresolved constraints</li>
+                  <li><b>Graph</b>dependency model</li>
+                </ul>
+                <ul class="tags"><li>Vue 3</li><li>FastAPI</li><li>Neo4j</li><li>Daytona</li><li>Qwen</li></ul>
+              </div>
+            </details>
+          </li>
+          <li class="project reveal">
+            <details>
+              <summary>
+                <span class="project__n">04</span>
+                <span class="project__main">
+                  <span class="project__name">ResolveOS</span>
+                  <span class="project__pitch">Payment disputes, triaged by an agent.</span>
+                </span>
+                <span class="project__when">PayPal Hackathon<span class="project__date">Oct – Nov 2026</span></span>
+                <span class="project__plus" aria-hidden="true"></span>
+              </summary>
+              <div class="project__body">
+                <div>
+                  <p>An AI-assisted dispute resolution platform that turns messy buyer–merchant disputes into structured workflows with settlement recommendations.</p>
+                  <p>An agentic prioritisation engine weighs financial exposure, dispute stage and pending actions to surface urgent cases and recommend next steps.</p>
+                </div>
+                <ul class="project__facts">
+                  <li><b>Agent</b>prioritisation engine</li>
+                  <li><b>Sandbox</b>PayPal integration</li>
+                  <li><b>Guided</b>settlement workflows</li>
+                </ul>
+                <ul class="tags"><li>Vue 3</li><li>TypeScript</li><li>Vite</li><li>PayPal Sandbox</li></ul>
+              </div>
+            </details>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 3. SKILLS -->
+    <section class="section skills" id="skills" aria-labelledby="skills-title">
+      <div class="wrap">
+        <p class="label reveal">03 / The skills</p>
+        <div class="skills__grid">
+          <div class="skills__info">
+            <h2 class="skills__title reveal" id="skills-title">Skills</h2>
+            <p class="skills__hint reveal">(hint: press a key)</p>
+            <div class="skill-card" id="skill-card" aria-live="polite">
+              <p class="skill-card__name" id="skill-name">Pick a key</p>
+              <p class="skill-card__line" id="skill-line">Tap a keycap, or type on your keyboard. Every key is something I've built with.</p>
+              <ul class="tags" id="skill-used"></ul>
+            </div>
+            <button class="sound" type="button" id="sound-toggle" aria-pressed="false">Key sounds: off</button>
+          </div>
+          <div class="kb-stage">
+            <div class="kb" id="keyboard" role="group" aria-label="Skills keyboard"></div>
+          </div>
+        </div>
+        <noscript><p class="skills__fallback">Python · JavaScript · TypeScript · HTML/CSS · SQL · Vue 3 · FastAPI · Bootstrap 5 · PostgreSQL · Supabase · SQLite · Neo4j · Vite · GitHub · Vercel</p></noscript>
+      </div>
+    </section>
+
+    <!-- 4. RESUME -->
+    <section class="section resume" id="resume" aria-labelledby="resume-title">
+      <div class="wrap">
+        <p class="label reveal">04 / The résumé</p>
+        <div class="resume__grid">
+          <div class="resume__side">
+            <h2 class="display reveal" id="resume-title">The journey.<br><span class="accent">The résumé.</span></h2>
+            <p class="resume__lede reveal">From leading recruits through fitness tests to leading teams through hackathons. The full one-pager is below.</p>
+            <div class="resume__actions reveal">
+              <a class="btn btn--red" href="assets/docs/Elkan-Tong-Resume.pdf" download>Download PDF <span aria-hidden="true">↓</span></a>
+              <a class="btn btn--ghost" href="assets/docs/Elkan-Tong-Resume.pdf" target="_blank" rel="noopener">Open in new tab</a>
+            </div>
+            <dl class="facts reveal">
+              <div><dt>Education</dt><dd>BSc Information Systems<br>Singapore Management University</dd></div>
+              <div><dt>Languages</dt><dd>Python, JavaScript, TypeScript, HTML/CSS, SQL</dd></div>
+              <div><dt>Frameworks</dt><dd>Vue 3, FastAPI, Bootstrap 5</dd></div>
+              <div><dt>Tools &amp; platforms</dt><dd>GitHub, PostgreSQL, Supabase, Vercel, SQLite</dd></div>
+              <div><dt>Spoken</dt><dd>English, Chinese</dd></div>
+            </dl>
+          </div>
+
+          <ol class="timeline">
+            <li class="reveal">
+              <p class="timeline__when">2025 – Present</p>
+              <div><h3>BSc Information Systems</h3><p class="timeline__org">Singapore Management University</p>
+              <p>Building products across full-stack web, data and AI, in class and at hackathons.</p></div>
+            </li>
+            <li class="reveal">
+              <p class="timeline__when">Jun 2025 &amp; Jun 2026</p>
+              <div><h3>Church Camp Commandant</h3><p class="timeline__org">Leadership</p>
+              <p>Led end-to-end programme planning, logistics and resource allocation for camps serving ~300 participants.</p></div>
+            </li>
+            <li class="reveal">
+              <p class="timeline__when">Independent</p>
+              <div><h3>Forex Trading &amp; Community</h3><p class="timeline__org">Passion project</p>
+              <p>Analysed FX markets and developed strategies with a trading team. Hosted education sessions for ~15 participants and grew a Telegram community to 175 subscribers.</p></div>
+            </li>
+            <li class="reveal">
+              <p class="timeline__when">Apr 2023 – Apr 2025</p>
+              <div><h3>Field Instructor</h3><p class="timeline__org">Singapore Police Force</p>
+              <p>Led recruit fitness training, taking previously failing squads to a 100% IPPT pass rate, with 20% earning gold.</p></div>
+            </li>
+            <li class="reveal">
+              <p class="timeline__when">Feb – Apr 2023</p>
+              <div><h3>HR &amp; Admin Part-Timer</h3><p class="timeline__org">Lighthouse Legacy Group (Great Eastern)</p>
+              <p>Supported candidate screening, interview coordination and onboarding across recruitment workflows.</p></div>
+            </li>
+            <li class="reveal">
+              <p class="timeline__when">Feb – Mar 2023</p>
+              <div><h3>AI Model Curator</h3><p class="timeline__org">Dreamy Paws</p>
+              <p>Created personalised AI pet portraits through iterative prompting, analysing output variations to find the keywords that worked.</p></div>
+            </li>
+          </ol>
+        </div>
+
+        <div class="paper reveal">
+          <div class="paper__bar">
+            <span>Elkan-Tong-Resume.pdf</span>
+            <a href="assets/docs/Elkan-Tong-Resume.pdf" download>Download</a>
+          </div>
+          <iframe class="paper__frame" src="assets/docs/Elkan-Tong-Resume.pdf#view=FitH&amp;toolbar=0" title="Elkan Tong's résumé (PDF)" loading="lazy"></iframe>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="section contact" id="contact" aria-labelledby="contact-title">
+      <div class="wrap">
+        <p class="label reveal">05 / Your next build</p>
+        <h2 class="contact__title reveal" id="contact-title">Let's work<br>together<span class="accent">.</span></h2>
+        <p class="contact__lede reveal">A role, a hackathon team, or an idea that needs building? My inbox is open.</p>
+        <div class="contact__actions reveal">
+          <a class="btn btn--red btn--lg" id="email-link" href="#contact" data-u="elkantong" data-d="gmail.com">
+            <span id="email-text">elkantong [at] gmail [dot] com</span>
+          </a>
+          <button class="btn btn--ghost btn--lg" type="button" id="copy-email" hidden>Copy email</button>
+          <a class="btn btn--ghost btn--lg" href="https://www.linkedin.com/in/elkan-tong-874542372" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span></a>
+        </div>
+        <p class="toast" id="toast" role="status" aria-live="polite"></p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer__inner">
+      <p>© 2026 Elkan Tong Kai En</p>
+      <p>Hand-built. No frameworks, no trackers.</p>
+      <a href="#top">Back to top ↑</a>
+    </div>
+  </footer>
+</body>
+</html>
