@@ -15,6 +15,7 @@ js/main.js          module: adds .ready; nav, scroll spy, progress, reveals, cou
 js/motion.js        module: word-split headlines, .scrub paragraphs, .rail fills, hero exit parallax
 assets/work/        project screenshots (JPEG, 1280×720, frames from Elkan's demo videos)
 js/builders.js      module: builder-cursor overlay; returns request(el, onDone) used by the reveal observer (null for reduced motion)
+js/typer.js         module: prime(el) hides characters in place, play() types them in and returns { dur, caret }; restores original text nodes when done
 js/icons.js         GENERATED — `export const ICONS = { id: svgPathD }`; do not hand-edit except `sql` (custom)
 assets/fonts/       anton-400.woff2, inter-var.woff2
 docs/               documentation

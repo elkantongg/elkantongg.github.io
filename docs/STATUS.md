@@ -17,6 +17,10 @@ Verified 2026-11-12 in the Claude desktop app's built-in browser (Chromium) at d
 | Feedback round (D-019): @elkantongg logo, hero cleanup, About tiles, project shots + links, keycap sound, no hint / full stops, constant marquee, spring cursors, contact ring | verified (sound not heard) | 2026-11-12, headless Chrome at 1280×800, 820×1180, 390×844: no console errors or failed requests, no horizontal scroll, marquee ~33–45px/s regardless of scroll, ring visible at all three sizes, Lepak screenshot loads when expanded. Fixed while checking: work rows never revealed (clip-path → zero-area target never hit the 12% threshold). Keycap sound is untested by ear |
 | Hero | verified | Desktop, mobile. Content parallaxes/fades out on scroll. No ghost word or full stop since D-019 |
 | Builder cursors (D-017): crew frames every reveal, hero swarm + build, "Building n/42" pill | verified | 2026-11-12, headless Chrome (playwright-core + installed Google Chrome) at 1280×800 and 390×844, 61fps: frame sequences checked for hero (4.1–6.6s) and Work section; no console errors; no horizontal scroll. Built-in browser pane was throttled to 2fps (hidden), so not used for timing. `js/particles.js` is now unused; delete it. Not tested: Safari/Firefox, real phones |
+| Scroll cue + agents pill removed (D-023) | verified | 2026-11-12, headless Chrome 1280×800: neither element exists, cursors still build, scroll test clean, no errors |
+| Sequential build order (D-022) + typer start fix | verified | 2026-11-12, headless Chrome 1280×800: logged finish times on load = navbar 5.87s, @elkantongg 6.19, About 6.58, Work 6.82, Skills 6.92, Journey/Contact 7.08, grid, 6 markers, Hello, Elkan, Tong, lede, buttons, facts by ~10s. Scroll test (desktop + 390×844) still keeps up; no errors; no hidden characters left. Fixed: a typer could crash when the frame timestamp preceded its start, leaving text hidden |
+| Build everything + continuous building while scrolling (D-021) | verified (awaiting Elkan's review) | 2026-11-12, headless Chrome at 1280×800 and 390×844 with continuous wheel scrolling (~780px/s): agents rise 10→25 on demand, nothing on screen left waiting once scrolling settles, navbar parts each framed, phone menu links visible, reduced motion shows everything with no canvas; no console errors, no horizontal scroll. Not tested: Safari/Firefox, real phones, trackpad momentum |
+| Builder detail pass (D-020): typed text + I-beam, 10-agent crew, guides, size/role tags, row bars, media slabs, project body build on open | verified (awaiting Elkan's review) | 2026-11-12, headless Chrome (playwright-core + installed Google Chrome) at 1280×800 and 390×844: frame captures of hero, About, Work, project open and Journey; no console errors, no horizontal scroll, no leftover `.ch`/caret/wrapper nodes after typing. Not tested: Safari/Firefox, real phones, screen readers during typing |
 | Motion pass (D-015, trimmed in D-019): word-split headlines, rails, row wipes | verified | 2026-11-12, built-in browser at 800×600 and 375×812: no console errors, no horizontal scroll. Not tested: performance on low-end phones, Safari |
 | "Built at" marquee | verified | Desktop only |
 | 01 About section (headline, lede, 3 animated tiles) | verified | Replaced the Idea section (D-019). Copy awaiting Elkan's review |
@@ -43,9 +47,10 @@ Verified 2026-11-12 in the Claude desktop app's built-in browser (Chromium) at d
 - Reduced-motion marquee would have shown duplicated text.
 
 ## Next priorities
-0. Elkan to review the About copy (headline + personality lines are Claude drafts) and listen to the new keycap sound.
-1. Test in Safari and Firefox, and on a real phone.
-2. Answer open questions; choose hosting; add security headers; deploy.
+0. Elkan to review the builder passes (D-020, D-021); then the next feature.
+1. Elkan to review the About copy (headline + personality lines are Claude drafts) and listen to the new keycap sound.
+2. Test in Safari and Firefox, and on a real phone.
+3. Answer open questions; choose hosting; add security headers; deploy.
 
 ## Open questions (need Elkan)
 - Audience / positioning (recruiters? clients? hackathon teams?)

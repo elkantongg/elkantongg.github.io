@@ -1,6 +1,7 @@
 import { ICONS } from "./icons.js";
 import { initMotion } from "./motion.js";
 import { initBuilders } from "./builders.js";
+import { prime } from "./typer.js";
 
 const root = document.documentElement;
 root.classList.add("ready");
@@ -14,17 +15,7 @@ const SVG_NS = "http://www.w3.org/2000/svg";
 (function intro() {
   const el = $("#intro");
   if (!el || root.classList.contains("no-intro")) return;
-  const INTRO_MS = 3700; // matches --hd in style.css
-  const finish = () => {
-    // Browsers don't re-time running animations when --hd changes, so fast-forward
-    // the hero entrance past the intro's delay (keeps the per-element stagger).
-    const hero = $(".hero");
-    document.getAnimations().forEach((a) => {
-      const target = a.effect && a.effect.target;
-      if (target && hero.contains(target) && /^(rise|fade-up)$/.test(a.animationName) && a.currentTime < INTRO_MS) {
-        a.currentTime = INTRO_MS;
-      }
-    });
+  const finish = () => { // the builder crew starts on the page as soon as the intro hands over
     root.classList.remove("intro-active");
     el.classList.add("is-done");
     document.removeEventListener("keydown", onKey);
@@ -75,6 +66,22 @@ window.addEventListener("resize", onScroll, { passive: true });
 onScroll();
 
 /* ----------------------------------------------------- reveal + counters */
+// Everything on the page is built by the cursor crew, down to small parts. Containers listed here
+// are built before their parts (builders.js waits for an unbuilt .reveal ancestor).
+const PARTS = [
+  ".nav", ".nav__logo", ".nav__toggle",
+  ".hero__grid", ".hero__grid .cross", ".hero__hello", ".hero__row", ".hero__lede", ".hero__actions .btn",
+  ".hero__meta", ".hero__meta li", ".marquee",
+  ".like h3", ".like p",
+  ".project__n", ".project__name", ".project__pitch", ".project__when", ".project__plus",
+  ".skill-card", ".sound", ".kb-stage",
+  ".facts > div", ".timeline > li h3", ".timeline > li p",
+  ".contact__actions > *", ".footer__inner > *",
+];
+if (!reducedMotion.matches) {
+  if (window.matchMedia("(min-width: 761px)").matches) PARTS.push(".nav__links > li"); // phone menu links stay instant
+  $$(PARTS.join(", ")).forEach((el) => el.classList.add("reveal"));
+}
 $$(".reveal").forEach((el) => {
   const siblings = $$(":scope > .reveal", el.parentElement);
   const i = siblings.indexOf(el);
@@ -95,10 +102,22 @@ function countUp(dd) {
   };
   requestAnimationFrame(step);
 }
-function reveal(el) {
+// Text the builders type into its frame instead of fading in (reference video 4).
+const TYPED = [
+  ".nav__logo", ".nav__links > li", ".btn", ".hero__hello", ".hero__lede", ".hero__meta li",
+  ".label", ".about__lede", ".like h3", ".like p", ".work__count",
+  ".project__n", ".project__name", ".project__pitch", ".project__when",
+  ".skill-card", ".sound", ".resume__lede", ".facts > div", ".timeline > li h3", ".timeline > li p",
+  ".contact__lede", ".footer__inner > *",
+].join(", ");
+function reveal(el, typed = false) {
+  if (el.matches(".kb-stage")) $("#keyboard").classList.add("in"); // keycaps pop up once the stage is built
+  const typer = typed && el.matches(TYPED) ? prime(el) : null; // hide characters before the element shows
+  if (typer) el.classList.add("is-typed"); // shows at once: the typing is the entrance
   el.classList.add("in");
   const dd = el.querySelector("dd[data-count]");
   if (dd) countUp(dd);
+  return typer ? typer.play() : null;
 }
 const build = initBuilders(reducedMotion); // cursor crew frames each element before it appears
 const revealer = new IntersectionObserver((entries) => {
@@ -107,11 +126,28 @@ const revealer = new IntersectionObserver((entries) => {
     const el = entry.target;
     revealer.unobserve(el);
     if (!build) { reveal(el); return; }
-    build(el, () => { el.style.setProperty("--rd", "0s"); reveal(el); });
+    build(el, () => { el.style.setProperty("--rd", "0s"); return reveal(el, true); });
   });
-}, { threshold: 0, rootMargin: "0px 0px -10% 0px" }); // 0: work rows start fully clipped (zero visible area)
+}, { threshold: 0 }); // building starts the moment any pixel is on screen
 initMotion(reducedMotion); // splits headlines into words before they're observed
 $$(".reveal").forEach((el) => revealer.observe(el));
+
+// First time a project opens, the crew builds its body: a slab for the screenshot, typed write-up.
+if (build) {
+  $$(".project details").forEach((d) => {
+    d.addEventListener("toggle", () => {
+      if (!d.open || d.dataset.built) return;
+      d.dataset.built = "1";
+      const shot = $(".project__shot", d);
+      if (shot) {
+        shot.classList.add("is-pending");
+        build(shot, () => { shot.classList.remove("is-pending"); return null; });
+      }
+      const text = $(".project__body > div", d);
+      if (text) { const t = prime(text); build(text, () => t.play()); }
+    });
+  });
+}
 
 /* -------------------------------------------------------------- contact */
 (function contact() {
@@ -274,7 +310,7 @@ const LAYERS = 12;
   let skillsInView = false;
   new IntersectionObserver(([entry]) => {
     skillsInView = entry.isIntersecting;
-    if (skillsInView) board.classList.add("in");
+    if (skillsInView && !build) board.classList.add("in"); // with builders, the stage's build triggers it
     if (skillsInView && !userTouched && active < 0) {
       setTimeout(() => { if (!userTouched && active < 0) press(SKILLS.findIndex((s) => s.id === "vuedotjs")); }, 700);
     }

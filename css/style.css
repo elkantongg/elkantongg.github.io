@@ -34,11 +34,9 @@
   --gutter: clamp(16px, 4vw, 48px);
   --max: 1240px;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
-  --hd: 0.1s; /* hero entrance delay; extended while the intro plays */
   color-scheme: dark;
   interpolate-size: allow-keywords;
 }
-html.js:not(.no-intro) { --hd: 5.4s; } /* intro (3.7s) + builder crew framing the hero */
 
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
@@ -278,6 +276,9 @@ html.ready .reveal {
   transition-delay: var(--rd, 0s);
 }
 html.ready .reveal.in { opacity: 1; transform: none; }
+/* build targets that must not shift (fixed bar, 3D stage, full-bleed decor) only fade */
+html.ready .nav.reveal { transform: none; transition: opacity 0.5s, background 0.3s, border-color 0.3s, backdrop-filter 0.3s; }
+html.ready .kb-stage.reveal, html.ready .hero__grid.reveal, html.ready .marquee.reveal { transform: none; }
 
 /* split headlines: each word rises out of its own mask (words built by motion.js) */
 html.ready .reveal.is-split { opacity: 1; transform: none; }
@@ -291,19 +292,21 @@ html.ready .reveal.is-split { opacity: 1; transform: none; }
 html.ready .scrub .sw { --o: 0.16; }
 html.ready .scrub .sw.on { --o: 1; }
 
-/* builder cursors (drawn by builders.js) + build counter */
-.builders { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 90; pointer-events: none; }
-.build-hud {
-  position: fixed; left: 50%; bottom: max(18px, env(safe-area-inset-bottom)); z-index: 95; pointer-events: none;
-  display: flex; align-items: center; gap: 8px; padding: 7px 14px 7px 12px; border-radius: 999px;
-  background: rgba(17, 17, 21, 0.86); border: 1px solid var(--line-2); backdrop-filter: blur(8px);
-  font-size: 0.7rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
-  font-variant-numeric: tabular-nums; white-space: nowrap;
-  opacity: 0; transform: translate(-50%, 10px); transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
+/* typed text (typer.js): characters keep their layout while hidden; blue caret matches the builder frames */
+html.ready .reveal.is-typed:not(.project) { transform: none; transition: none; }
+.ch { opacity: 0; }
+.ch.on { opacity: 1; }
+.caret {
+  display: inline-block; width: 0; height: 1em; margin-right: -2px; vertical-align: -0.12em;
+  border-left: 2px solid var(--build); box-shadow: 0 0 6px rgba(76, 141, 255, 0.6);
 }
-.build-hud::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--build); box-shadow: 0 0 8px var(--build); animation: hud-blink 1s steps(2) infinite; }
-.build-hud.is-on { opacity: 1; transform: translate(-50%, 0); }
-@keyframes hud-blink { 50% { opacity: 0.25; } }
+.caret.is-idle { animation: blink 0.7s steps(2) infinite; }
+.project__shot { transition: opacity 0.7s var(--ease); }
+.project__shot.is-pending { opacity: 0; }
+
+/* builder cursors (drawn by builders.js) */
+.builders { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 115; pointer-events: none; }
+@keyframes blink { 50% { opacity: 0.25; } }
 
 /* scroll-linked rails (process + timeline): --tl set by motion.js */
 .rail { --tl: 1; }
@@ -356,16 +359,10 @@ html.ready .rail { --tl: 0; }
 }
 .hero__row { display: block; overflow: hidden; padding-bottom: 0.04em; }
 .hero__row > span, .hero__hello > span { display: inline-block; }
-html.js .hero__row > span, html.js .hero__hello > span {
-  animation: rise 1.05s var(--ease) both; animation-delay: var(--hd);
-}
-html.js .hero__row:nth-child(2) > span { animation-delay: calc(var(--hd) + 0.1s); }
-html.js .hero__bottom, html.js .hero__meta, html.js .hero__scroll {
-  animation: fade-up 0.9s var(--ease) both; animation-delay: calc(var(--hd) + 0.35s);
-}
-html.js .hero__meta { animation-delay: calc(var(--hd) + 0.5s); }
-@keyframes rise { from { transform: translateY(125%) rotate(3deg); } to { transform: none; } }
-@keyframes fade-up { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+/* the crew builds the hero like everything else: each title row rises out of its mask once framed */
+html.ready .hero__row.reveal { opacity: 1; transform: none; transition: none; }
+html.ready .hero__row.reveal > span { transform: translateY(125%) rotate(3deg); transition: transform 1.05s var(--ease); }
+html.ready .hero__row.reveal.in > span { transform: none; }
 
 .hero__bottom {
   display: flex; flex-wrap: wrap; gap: 28px 48px; align-items: flex-end; justify-content: space-between;
@@ -381,16 +378,6 @@ html.js .hero__meta { animation-delay: calc(var(--hd) + 0.5s); }
 .hero__meta span {
   font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); font-weight: 600;
 }
-.hero__scroll {
-  position: absolute; left: 50%; bottom: 26px; translate: -50% 0;
-  width: 26px; height: 42px; border: 1.5px solid var(--line-2); border-radius: 20px;
-}
-.hero__scroll span {
-  position: absolute; left: 50%; top: 8px; width: 3px; height: 8px; margin-left: -1.5px;
-  background: var(--red); border-radius: 2px; animation: wheel 1.8s ease-in-out infinite;
-}
-@keyframes wheel { 0% { opacity: 0; transform: translateY(0); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(14px); } }
-@media (max-height: 700px) { .hero__scroll { display: none; } }
 
 /* Marquee */
 .marquee {
@@ -735,7 +722,7 @@ html.ready .kb.in .key { animation: key-pop 0.7s cubic-bezier(0.34, 1.7, 0.6, 1)
     animation-delay: 0s !important; transition-duration: 0.001ms !important;
   }
   .marquee__track { animation: none !important; }
-  .builders, .build-hud { display: none; }
+  .builders { display: none; }
   .like__art * { animation: none !important; }
   .art-chart__line { stroke-dashoffset: 0; }
   .art-chart i { display: none; }
