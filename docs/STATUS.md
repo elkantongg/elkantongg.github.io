@@ -48,9 +48,9 @@ Verified 2026-11-12 in the Claude desktop app's built-in browser (Chromium) at d
 - Reduced-motion marquee would have shown duplicated text.
 
 ## Next priorities
-0. Next feature (builder passes D-020–D-023 approved and pushed in 1d89e29).
+0. Next feature (lanyard, Toolkit rename and Elkan's About copy pushed in eb31cbf).
 1. Elkan to confirm the About headline ("Curious builder / Disciplined by habit", Claude draft) and listen to the new keycap sound.
-1a. Elkan to review the lanyard badge (wording on the card is a Claude draft) and try the QR with a phone camera; commit lanyard + Toolkit rename once approved.
+1a. Elkan to review the lanyard badge (wording on the card is a Claude draft) and try the QR with a phone camera; (already committed and pushed in eb31cbf).
 2. Test in Safari and Firefox, and on a real phone (incl. dragging the lanyard by touch and 3D performance on low-end phones).
 3. Answer open questions; choose hosting; add security headers; deploy.
 
