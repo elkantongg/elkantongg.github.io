@@ -1,6 +1,7 @@
 import { ICONS } from "./icons.js";
 import { initMotion } from "./motion.js";
 import { initBuilders } from "./builders.js";
+import { initLanyard } from "./lanyard.js";
 import { prime } from "./typer.js";
 
 const root = document.documentElement;
@@ -74,7 +75,7 @@ const PARTS = [
   ".hero__meta", ".hero__meta li", ".marquee",
   ".like h3", ".like p",
   ".project__n", ".project__name", ".project__pitch", ".project__when", ".project__plus",
-  ".skill-card", ".sound", ".kb-stage",
+  ".skills__sub", ".skill-card", ".sound", ".kb-stage",
   ".facts > div", ".timeline > li h3", ".timeline > li p",
   ".contact__actions > *", ".footer__inner > *",
 ];
@@ -107,7 +108,7 @@ const TYPED = [
   ".nav__logo", ".nav__links > li", ".btn", ".hero__hello", ".hero__lede", ".hero__meta li",
   ".label", ".about__lede", ".like h3", ".like p", ".work__count",
   ".project__n", ".project__name", ".project__pitch", ".project__when",
-  ".skill-card", ".sound", ".resume__lede", ".facts > div", ".timeline > li h3", ".timeline > li p",
+  ".skills__sub", ".skill-card", ".sound", ".resume__lede", ".facts > div", ".timeline > li h3", ".timeline > li p",
   ".contact__lede", ".footer__inner > *",
 ].join(", ");
 function reveal(el, typed = false) {
@@ -130,6 +131,7 @@ const revealer = new IntersectionObserver((entries) => {
   });
 }, { threshold: 0 }); // building starts the moment any pixel is on screen
 initMotion(reducedMotion); // splits headlines into words before they're observed
+initLanyard(reducedMotion); // ID badge that drops into the hero
 $$(".reveal").forEach((el) => revealer.observe(el));
 
 // First time a project opens, the crew builds its body: a slab for the screenshot, typed write-up.
