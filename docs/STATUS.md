@@ -10,15 +10,16 @@ Verified 2026-11-12 in the Claude desktop app's built-in browser (Chromium) at d
 | Feature | State | Notes |
 |---|---|---|
 | Documentation system (CLAUDE.md + docs/) | implemented | |
-| Intro sequence (Welcome → to my → Portfolio → streak) | verified | Frames checked, incl. the 3.0s/3.2s black streak frame (paused via Web Animations API); "Portfolio" ends exactly centred |
+| Intro sequence (Welcome → to my → Portfolio → streak) | verified | Plays on every load (D-016): checked on reload with #idea in the same tab, intro ran and released after ~4s. Frames checked, incl. the 3.0s/3.2s black streak frame (paused via Web Animations API); "Portfolio" ends exactly centred |
 | Intro skip (button) | verified | Hero entrance starts immediately after skip; scroll unlocks |
 | Nav (fixed, scroll spy, mobile menu) + progress bar | verified | Active link follows sections; mobile menu opens, is opaque, closes on link tap and jumps to section |
-| Hero | verified | Desktop, tablet, mobile |
+| Hero | verified | Desktop, mobile. Red "Portfolio" ghost word (scroll + mouse parallax), content parallaxes/fades out on scroll |
+| Motion pass (D-015): particles, word-split headlines, scrubbed lede, rails, row wipes, scroll-reactive marquee | verified | 2026-11-12, built-in browser at 800×600 and 375×812: no console errors, no horizontal scroll. Not tested: performance on low-end phones, Safari |
 | "Built at" marquee | verified | Desktop only |
-| 01 Idea section (headline, quote card, process, stats counters) | verified | Counters land on correct values |
+| 01 Idea section (headline, scrubbed lede, process rail + sticky quote card, stats) | verified | Lede words light up on scroll; rail and dots fill; quote card sticky on desktop |
 | 02 Work section (4 expandable projects) | verified | Expand works; mobile meta reads "Hyperbloom Hackathon · Oct 2026" |
-| 03 Skills 3D keyboard | verified | Renders on desktop/tablet/mobile; auto-demo selects Vue 3; typing "p" → Python, again → PostgreSQL; click selects. Sound toggle not tested (audio can't be checked here) |
-| 04 Résumé (facts, timeline rail, PDF download + embed) | verified | PDF embed + download work locally; PDF is now tracked in git (D-013) |
+| 03 Skills 3D keyboard | verified | Keycaps taller, rounder, glossy; keys pop up in a wave on entry; active key stays raised (2026-11-12 feedback). Renders on desktop/tablet/mobile; auto-demo selects Vue 3; typing "p" → Python, again → PostgreSQL; click selects. Sound toggle not tested (audio can't be checked here) |
+| 04 Journey (facts + experience timeline with scroll-filled rail) | verified | Résumé PDF removed from the site and the repo (D-014); still in git history (commit 09f5576). Nav link renamed "Journey" (#journey) |
 | Contact (email, copy, LinkedIn) + footer | verified | `mailto:` assembled correctly; copy button shown. Clipboard copy itself not tested |
 | Favicon | implemented | `favicon.svg` added; not visually checked |
 | Security headers / hosting config | planned | Blocked on hosting decision |
@@ -39,6 +40,7 @@ Verified 2026-11-12 in the Claude desktop app's built-in browser (Chromium) at d
 - Reduced-motion marquee would have shown duplicated text.
 
 ## Next priorities
+0. Elkan to review the new motion pass against the reference video.
 1. Test in Safari and Firefox, and on a real phone.
 2. Answer open questions; choose hosting; add security headers; deploy.
 

@@ -8,8 +8,10 @@ Source of truth for all visible copy. Facts come from **Elkan's résumé (PDF, p
 - **Education:** BSc Information Systems, Singapore Management University, 2025 – present
 - **Email:** elkantong@gmail.com (shown on site, obfuscated in HTML)
 - **LinkedIn:** https://www.linkedin.com/in/elkan-tong-874542372
-- **Phone:** on résumé — OK to show (D-013). Currently visible only inside the résumé PDF; not in the site's HTML
+- **Phone:** on résumé — OK to show (D-013). Not shown on the site (résumé PDF removed, D-014)
 - **GitHub profile link:** TBD (repo owner is `elkantongg`; not yet confirmed for display)
+- **Hero buttons:** "See the work" · "Get in touch" (replaced "Download résumé", D-014)
+- **Journey section** *(Claude wording)*: heading "The journey. / So far."; lede "From leading recruits through fitness tests to leading teams through hackathons."
 - **Hero line** *(Claude wording)*: "Information Systems student at SMU, building full-stack products that take the friction out of everyday coordination."
 - **Positioning** *(Claude wording)*: "Not just code. What it fixes." / quote card "Find the friction. Ship the fix."
 

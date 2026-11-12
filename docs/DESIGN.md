@@ -3,13 +3,15 @@
 Visual identity, references, motion and UX rules. Values here match `css/style.css` `:root` tokens — change both together.
 
 ## References (provided by Elkan, 2026-11-12)
-Three short screen recordings (TikTok, third-party content — **not stored in the repo**, see DECISIONS D-009). Described here so future sessions don't need them:
+Four short screen recordings (TikTok, third-party content — **not stored in the repo**, see DECISIONS D-009). Described here so future sessions don't need them:
 
 1. **Intro** (~3.4s): plain off-white screen. Small, bold, black sans-serif "Welcome" blurs in centre, then blurs out. "to my" drops in word by word, then "Portfolio" blurs in in orange-red. Hard cut to black: "Portfolio" turns white with a glow while a blurred orange light streak sweeps horizontally behind it.
 2. **Main idea** — a dark, editorial personal site (a video editor's portfolio): near-black background; huge condensed uppercase headlines with a red second line ("THE WORK. THE RECOGNITION."); numbered items in red (01, 02, 03); thin grid lines with "+" crosshair markers; large outlined numbers; a red quote card; an experience timeline with a red vertical rail; closes with "LET'S WORK TOGETHER."
 3. **Skills** — an isometric 3D keyboard of chunky, glossy, multi-coloured keycaps, each with a tech logo. Title "SKILLS" + "(hint: press a key)". Pressing a key shows that skill's name in large type with a witty one-liner beside the keyboard.
 
-Elkan's mapping: video 1 → Intro, video 2 → main idea/overall style, video 3 → Skills (explicitly liked), plus a Résumé section.
+4. **Main idea, motion (60s, same site as #2)** — sent after the first build, which Elkan felt had "not much animation". Motion seen: tiny white/red arrow and "+" particles drifting over every section; a giant red word ("PORTFOLIO") behind the hero subject; headlines rising in; image/rows wiping in; numbered process list with a red rail beside a red quote card; timeline rail filling on scroll; big counters.
+
+Elkan's mapping: video 1 → Intro, videos 2 + 4 → main idea/overall style **and its level of motion**, video 3 → Skills (explicitly liked). Résumé section dropped (D-014).
 
 ## Identity
 - **Mood:** dark, cinematic, editorial, confident. Premium — never a generic template.
@@ -34,13 +36,22 @@ Rule: red is the **only** accent on the main site. Keycap colours are the one mu
 ### Recurring motifs
 - Section label: `NN / The thing` with a short red bar before it.
 - Two-line display headings, second line red ("The work. / The builds.").
-- Grid + crosshair "+" decor (hero only).
+- Grid + crosshair "+" decor (hero); particle arrows/pluses site-wide.
 - Red rail timeline with scroll-linked fill.
 
 ## Motion
 - Easing: `--ease: cubic-bezier(0.22, 1, 0.36, 1)`. Durations 0.2–1s; intro ~4s total.
 - Purposeful only: entrance reveals, hover feedback, keycap press, counters, marquee.
-- **Intro:** plays once per browser session; skippable (button, click, Esc/Enter/Space); skipped on reduced motion or when arriving with a `#hash`. Never blocks the page (CSS timeline + JS failsafe, D-004).
+- **Motion pass (D-015)** — `js/motion.js` + `js/particles.js`:
+  - Particles: canvas overlay (z 90, under nav), ~64 arrows/pluses desktop, 26 mobile; depth-based scroll parallax; pushed away by the mouse; paused when hidden.
+  - Section `h2.display` + contact title split into words that rise out of masks.
+  - Idea lede (`.scrub`) lights up word by word with scroll.
+  - `.rail` lists (process, timeline): red fill + glowing dots driven by scroll.
+  - Hero: ghost "Portfolio" word slides left on scroll and follows the mouse; hero content drifts down and fades on scroll; red full stop pops in.
+  - Work rows wipe in left→right (clip-path). Quote card has a slow light sweep and sticks while the process scrolls.
+  - Marquee driven by JS: speeds up with scroll velocity and follows scroll direction.
+  - Keyboard: taller (`--h` 0.34k), rounder (36% radius), 12 layers, specular highlight; keys pop up in a wave on entry; hovered/active keys rise.
+- **Intro:** plays on **every page load, including refresh and deep links** (Elkan, D-016); skippable (button, click, Esc/Enter/Space); skipped only on reduced motion. Never blocks the page (CSS timeline + JS failsafe, D-004).
 - **Reduced motion:** all animation/transition effectively disabled.
 
 ## UX & accessibility principles

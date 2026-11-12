@@ -2,10 +2,19 @@
 
 Personal developer portfolio for **Elkan Tong Kai En**, BSc Information Systems student at Singapore Management University (2025 – present), Singapore.
 
-- **Purpose:** show who Elkan is, what they build, and how to reach them; host the résumé.
+- **Purpose:** show who Elkan is, what they build, and how to reach them.
 - **Positioning:** a full-stack builder who finds real-world friction and ships the fix (tagline: *"Not just code. What it fixes."*).
 - **Audience:** TBD (recruiters / clients / hackathon teams — not yet confirmed).
 - **Repo:** https://github.com/elkantongg/portfolio (public, branch `main`).
+
+## Vision (from Elkan's reference videos)
+Elkan sent four TikTok screen recordings as inspiration. They are not in the repo (D-009), but each is described in detail in `docs/DESIGN.md` → *References*. Read that before any visual work. In short:
+1. **Intro:** "Welcome → to my → Portfolio" blur-in on off-white, then a hard cut to black with a glowing white "Portfolio" and an orange light streak.
+2. **Main idea / overall style:** dark, cinematic, editorial portfolio. Huge condensed uppercase headlines with a red second line, red numbering, red quote card, red-rail timeline, "Let's work together" close.
+3. **Skills:** isometric 3D keyboard of chunky, glossy, rounded keycaps with tech logos; pressing a key shows the skill name and a witty line. Elkan explicitly liked this one.
+4. **Main idea, motion:** same site as #2, showing how alive it should feel: drifting particles, giant red background word in the hero, headlines rising in, wipes, scroll-filled rails. **Plenty of purposeful animation is expected; a static page misses the brief.**
+
+No résumé on the site (D-014).
 
 ## Session start routine
 1. Read this file.

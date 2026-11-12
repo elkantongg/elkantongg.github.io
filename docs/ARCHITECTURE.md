@@ -11,10 +11,11 @@
 index.html          single page; all sections in order
 css/style.css       one stylesheet, sectioned with banner comments (tokens → intro → nav → shared → sections → responsive → reduced motion)
 js/boot.js          classic script in <head>: adds .js, decides intro (.no-intro / .intro-active), 4.2s failsafe
-js/main.js          module: adds .ready; nav, scroll spy, progress, timeline fill, reveals, counters, contact, skills keyboard, sound
+js/main.js          module: adds .ready; nav, scroll spy, progress, reveals, counters, contact, skills keyboard, sound
+js/motion.js        module: word-split headlines, scrubbed lede, .rail fills, hero parallax, scroll-reactive marquee
+js/particles.js     module: ambient canvas particle field (skipped for reduced motion)
 js/icons.js         GENERATED — `export const ICONS = { id: svgPathD }`; do not hand-edit except `sql` (custom)
 assets/fonts/       anton-400.woff2, inter-var.woff2
-assets/docs/        Elkan-Tong-Resume.pdf (public, D-013)
 docs/               documentation
 ```
 
@@ -31,10 +32,10 @@ docs/               documentation
 - External links: `target="_blank" rel="noopener noreferrer"`.
 - Email assembled in JS from `data-u` / `data-d` (validated by regex) to reduce scraping; HTML fallback is `name [at] domain`.
 - No secrets exist in this project; none may be added.
-- **TODO with hosting decision:** real HTTP security headers (CSP incl. `frame-ancestors 'self'`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, HSTS). Note `X-Frame-Options` must be `SAMEORIGIN` (not `DENY`) because the page iframes its own résumé PDF.
+- **TODO with hosting decision:** real HTTP security headers (CSP incl. `frame-ancestors 'self'`, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, HSTS). The page no longer iframes anything, so `X-Frame-Options: DENY` / `frame-ancestors 'none'` is fine; meta CSP now has `frame-src 'none'`.
 
 ## Performance
-- ~70KB fonts preloaded; no images except icons (inline SVG). No layout-shifting embeds except the lazy résumé iframe (hidden < 640px).
+- ~70KB fonts preloaded; no images except icons (inline SVG). No embeds. One fixed canvas for particles (DPR capped at 2, paused when the tab is hidden).
 - Animations use `transform`/`opacity`/`filter` only.
 
 ## Run locally

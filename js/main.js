@@ -1,4 +1,6 @@
 import { ICONS } from "./icons.js";
+import { initMotion } from "./motion.js";
+import { initParticles } from "./particles.js";
 
 const root = document.documentElement;
 root.classList.add("ready");
@@ -59,19 +61,13 @@ const spy = new IntersectionObserver((entries) => {
 }, { rootMargin: "-45% 0px -50% 0px" });
 ["top", ...navLinks.keys()].forEach((id) => { const s = document.getElementById(id); if (s) spy.observe(s); });
 
-/* ------------------------------------------- scroll: progress + timeline */
+/* ----------------------------------------------------- scroll: progress */
 const bar = $("#progress-bar");
-const timeline = $(".timeline");
 let ticking = false;
 function onScroll() {
   const max = document.documentElement.scrollHeight - window.innerHeight;
   bar.style.transform = `scaleX(${max > 0 ? Math.min(1, window.scrollY / max) : 0})`;
   nav.classList.toggle("is-scrolled", window.scrollY > 10);
-  if (timeline) {
-    const r = timeline.getBoundingClientRect();
-    const p = (window.innerHeight * 0.65 - r.top) / r.height;
-    timeline.style.setProperty("--tl", Math.max(0, Math.min(1, p)).toFixed(3));
-  }
   ticking = false;
 }
 window.addEventListener("scroll", () => { if (!ticking) { ticking = true; requestAnimationFrame(onScroll); } }, { passive: true });
@@ -108,7 +104,9 @@ const revealer = new IntersectionObserver((entries) => {
     revealer.unobserve(entry.target);
   });
 }, { threshold: 0.12, rootMargin: "0px 0px -6% 0px" });
+initMotion(reducedMotion); // splits headlines into words before they're observed
 $$(".reveal").forEach((el) => revealer.observe(el));
+initParticles(reducedMotion);
 
 /* -------------------------------------------------------------- contact */
 (function contact() {
@@ -169,7 +167,7 @@ const SKILLS = [
   { id: "vercel", name: "Vercel", c: "#ececec", ink: "#000", line: "Push to deploy. From laptop to live link before the judges arrive.", used: [] },
 ];
 const COLS = 4;
-const LAYERS = 8;
+const LAYERS = 12;
 
 (function keyboard() {
   const board = $("#keyboard");
@@ -191,6 +189,7 @@ const LAYERS = 8;
     btn.setAttribute("aria-pressed", "false");
     btn.tabIndex = i === 0 ? 0 : -1;
     btn.style.setProperty("--c", skill.c);
+    btn.style.setProperty("--ki", String((i % COLS) + Math.floor(i / COLS)));
     if (skill.ink) btn.style.setProperty("--ink", skill.ink);
 
     // stacked layers give the keycap real, rounded depth
@@ -199,15 +198,16 @@ const LAYERS = 8;
       layer.className = "key__l";
       layer.setAttribute("aria-hidden", "true");
       const t = l / (LAYERS - 1);
-      layer.style.setProperty("--z", `calc(var(--h) * ${(-0.8 + t * 1.75).toFixed(3)})`);
-      layer.style.setProperty("--s", (1 - t * 0.08).toFixed(3));
+      layer.style.setProperty("--z", `calc(var(--h) * ${(-0.8 + t * 1.72).toFixed(3)})`);
+      // sides stay full, then round in towards the top like a sculpted keycap
+      layer.style.setProperty("--s", (1 - 0.1 * Math.pow(t, 2.2)).toFixed(3));
       btn.appendChild(layer);
     }
     const top = document.createElement("span");
     top.className = "key__top";
     top.setAttribute("aria-hidden", "true");
     top.style.setProperty("--z", "calc(var(--h) * 1)");
-    top.style.setProperty("--s", "0.9");
+    top.style.setProperty("--s", "0.88");
     const svg = document.createElementNS(SVG_NS, "svg");
     svg.setAttribute("viewBox", "0 0 24 24");
     svg.setAttribute("focusable", "false");
@@ -269,6 +269,7 @@ const LAYERS = 8;
   let skillsInView = false;
   new IntersectionObserver(([entry]) => {
     skillsInView = entry.isIntersecting;
+    if (skillsInView) board.classList.add("in");
     if (skillsInView && !userTouched && active < 0) {
       setTimeout(() => { if (!userTouched && active < 0) press(SKILLS.findIndex((s) => s.id === "vuedotjs")); }, 700);
     }
