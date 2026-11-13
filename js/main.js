@@ -200,28 +200,58 @@ $$(".reveal").forEach((el) => revealer.observe(el));
     if (focus) btns[i].focus({ preventScroll: true });
     if (seen) show(i);
   }
+  // Order (D-036): the card strip is built first (each caption, then its picture, then the controls).
+  // Only after that does the details panel unfold, and its parts are built once you've scrolled to it.
+  let cardsDone = !build, panelInView = false;
   function show(i) {
     if (i === open) return;
     projs.forEach((pr, k) => { if (k !== i) { clearTimeout(timers.get(pr)); pr.classList.remove("is-active", "is-entering"); } });
-    const pr = projs[i];
-    clearTimeout(timers.get(pr));
+    clearTimeout(timers.get(projs[i]));
     open = i;
+    projs[i].classList.add("is-active");
+    sync(true);
+  }
+  function sync(switched = false) {
+    if (open < 0 || !cardsDone) return; // the details wait for the cards
     detail.classList.add("is-open");
-    if (build && detail.classList.contains("reveal") && !detail.dataset.built) { // the panel outline goes up first
+    const pr = projs[open];
+    if (!build || pr.dataset.built) { // already built: a switch just rises in
+      if (switched && pr.dataset.built) { pr.classList.add("is-entering"); later(pr, () => pr.classList.remove("is-entering"), 900); }
+      pr.dataset.built = "1";
+      return;
+    }
+    if (!panelInView) return; // built when you get there
+    if (!detail.dataset.built) { // the panel outline goes up first
       detail.dataset.built = "1";
       build(detail, () => reveal(detail));
     }
-    pr.classList.add("is-active");
-    if (build && !pr.dataset.built) { // first visit: every part is built by the crew, in page order
-      pr.dataset.built = "1";
-      partsOf(pr).forEach((el) => build(el, () => reveal(el, true)));
-      return;
-    }
-    pr.dataset.built = "1";
-    pr.classList.add("is-entering");
-    later(pr, () => pr.classList.remove("is-entering"), 900);
+    pr.dataset.built = "1"; // first visit: every part is built by the crew, in page order
+    partsOf(pr).forEach((el) => build(el, () => reveal(el, true)));
   }
-  new IntersectionObserver(([e], io) => { // the first project's details start once the strip is on screen
+  if (!cardsDone) { // done when every strip part on screen (captions, pictures, arrows, rail, counter) is shown
+    const onScreenX = (el) => { const r = el.getBoundingClientRect(); return r.right > 0 && r.left < innerWidth; };
+    const wait = setInterval(() => {
+      if (!seen || $$(".reveal", flow).some((el) => !el.classList.contains("in") && onScreenX(el))) return;
+      clearInterval(wait);
+      cardsDone = true;
+      sync();
+    }, 150);
+  }
+  // "At the project": you've scrolled past the cards, i.e. the arrows bar is in the top 45% of the screen.
+  // (Measured on the bar, not the panel, because the panel moves as it unfolds.)
+  const bar = $(".flow__bar", flow);
+  let checking = false;
+  const check = () => {
+    checking = false;
+    const was = panelInView;
+    panelInView = bar.getBoundingClientRect().bottom < innerHeight * 0.45;
+    if (panelInView && !was) sync();
+  };
+  const onScroll = () => { if (!checking) { checking = true; requestAnimationFrame(check); } };
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll, { passive: true });
+  check();
+  new IntersectionObserver(([e], io) => { // the front project is picked once the strip is on screen
     if (!e.isIntersecting) return;
     io.disconnect();
     seen = true;

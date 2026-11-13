@@ -38,6 +38,7 @@ Verified 2026-11-12 in the Claude desktop app's built-in browser (Chromium) at d
 | SEO extras (og:image, canonical URL, sitemap, robots) | planned | Can use https://elkantongg.github.io/ now |
 
 ## Known issues
+- Work (D-036): sequence checked 2026-11-13 in headless Chrome at 1280×800 and 390×844: strip → captions → pictures → controls; lingering ~5s on the cards built no detail part; scrolling down then built the panel and all 17 ResolveOS parts; no console errors. Not checked in the built-in browser (pane hidden).
 - Work (D-035): caption-before-picture checked 2026-11-13 in headless Chrome (all 4 cards at 1280×800 and 390×844). On phones the four captions appeared together at the 3s failsafe (crew busy with the rest of the screen), so they can pop in rather than be built. Not changed.
 - Work: switching projects while a panel is still being built leaves the old panel's remaining jobs running on the now-hidden parts (frames drawn over empty space for a moment). Not fixed.
 - Phones: the swinging lanyard badge can reach past the right edge (page measured 418–461px wide at 390px, 2026-11-13). Seen while checking Work; not investigated.
