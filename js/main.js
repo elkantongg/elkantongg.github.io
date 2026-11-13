@@ -76,7 +76,7 @@ const PARTS = [
   ".hero__grid", ".hero__grid .cross", ".hero__hello", ".hero__row", ".hero__lede", ".hero__actions .btn",
   ".hero__meta", ".hero__meta li", ".marquee",
   ".like h3", ".like p",
-  ".flow__stage", ".flow__btn img:not(.flow__blur)", ".flow__cap", ".flow__arrow", ".flow__rail", ".flow__count",
+  ".flow__stage", ".flow__cap", ".flow__arrow", ".flow__rail", ".flow__count",
   ".skills__sub", ".skill-card", ".sound", ".kb-stage",
   ".facts > div", ".timeline > li h3", ".timeline > li p",
   ".contact__actions > *", ".footer__inner > *",
@@ -116,6 +116,10 @@ const TYPED = [
 ].join(", ");
 function reveal(el, typed = false) {
   if (el.matches(".kb-stage")) $("#keyboard").classList.add("in"); // keycaps pop up once the stage is built
+  if (el.matches(".flow__cap") && build) { // a card's picture is only built once its name + pitch are up
+    const img = el.parentElement.querySelector("img.reveal:not(.in)");
+    if (img) build(img, () => reveal(img));
+  }
   const typer = typed && el.matches(TYPED) ? prime(el) : null; // hide characters before the element shows
   if (typer) el.classList.add("is-typed"); // shows at once: the typing is the entrance
   el.classList.add("in");
@@ -160,7 +164,7 @@ $$(".reveal").forEach((el) => revealer.observe(el));
     cards.forEach((card, i) => {
       const d = i - p, ad = Math.abs(d), s = Math.sign(d);
       const near = Math.min(ad, 1), far = Math.max(ad - 1, 0);
-      const x = s * (near * w * 0.74 + far * w * 0.24) * spread;
+      const x = s * (near * w * 0.6 + far * w * 0.17) * spread; // landscape cards: tighter fold
       const z = -(near * 170 + far * 46);
       const rot = -s * near * 58 * spread;
       card.style.transform = `translateX(${x.toFixed(1)}px) translateZ(${z.toFixed(1)}px) rotateY(${rot.toFixed(2)}deg)`;
@@ -177,6 +181,7 @@ $$(".reveal").forEach((el) => revealer.observe(el));
   let open = -1, seen = false;
   const partsOf = (pr) => $$(PROJ_PARTS.join(", "), pr);
   if (build) { // hidden from the start (set after the reveal observer, so only the crew shows them)
+    $$(".flow__btn img", flow).forEach((img) => img.classList.add("reveal")); // built right after its caption
     detail.classList.add("reveal");
     projs.forEach((pr) => partsOf(pr).forEach((el) => el.classList.add("reveal")));
   }

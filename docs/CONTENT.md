@@ -21,7 +21,7 @@ Source of truth for all visible copy. Facts come from **Elkan's résumé (PDF, p
 
 ## Featured projects
 Order on site: newest first (Elkan, 2026-11-13): 01 ResolveOS · 02 Care+ · 03 Wayfound · 04 Lepak. The table below keeps résumé order.
-Screenshots: ResolveOS is a frame from Elkan's demo video in `~/Desktop/Hackathons` (cropped to exclude the webcam); Lepak (availability screen, portrait) and Wayfound (live dashboard, landscape, mouse pointer removed) are from Elkan's 2026-11-13 screenshots → `assets/work/*.jpg`. Care+: screenshot of the app's home dashboard (portrait, cropped from Elkan's 2026-11-13 screenshot) → `assets/work/care.jpg`; repo https://github.com/haoen-01/WAD2G10T4 (Elkan, 2026-11-13). Live demo https://wad-2-g10-t4-client.vercel.app (Elkan, 2026-11-13).
+Screenshots (D-034, landscape 16:10): ResolveOS = negotiation screen from `~/Desktop/Hackathons/ResolveOS_Demo_Final.mp4` at 1:45 (webcam cropped out); Wayfound = disrupted schedule from `Wayfound-Daytona.mp4` at 0:46 (pointer + subtitles removed); Care+ and Lepak = top of Elkan's 2026-11-13 app screenshots → `assets/work/*.jpg`.
 Links (from GitHub, 2026-11-12): Lepak live https://lepak-hyperbloom.vercel.app + repo · Wayfound repo only (README demo URL is a temporary Daytona proxy) · ResolveOS live https://resolveos-paypal.onrender.com (from README; timed out when checked, likely a sleeping free instance) + repo.
 
 | # | Project | Context · Date | Stack | Résumé facts |
