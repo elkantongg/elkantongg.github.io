@@ -179,122 +179,114 @@
           <p class="work__count reveal" aria-hidden="true">04<sup>+</sup></p>
         </div>
 
-        <ul class="projects">
-          <li class="project reveal">
-            <details>
-              <summary>
-                <span class="project__n">01</span>
-                <span class="project__main">
-                  <span class="project__name">Lepak</span>
-                  <span class="project__pitch">Group outings, minus the group-chat chaos.</span>
-                </span>
-                <span class="project__when">Hyperbloom Hackathon<span class="project__date">Oct 2026</span></span>
-                <span class="project__plus" aria-hidden="true"></span>
-              </summary>
-              <div class="project__body">
-                <img class="project__shot" src="assets/work/lepak.jpg" width="1280" height="720" loading="lazy" decoding="async" alt="Lepak: the 'Paint when you're free' availability grid on a phone">
-                <div>
-                  <p>A full-stack group planning app that removes the back-and-forth of organising outings: shared availability, venue voting and automated itineraries in one place.</p>
-                  <p>Fuzzy place search over ~19,000 Singapore locations, with real-time sync so everyone sees the plan change as it happens.</p>
-                </div>
-                <ul class="project__facts">
-                  <li><b>~19k</b>places searchable</li>
-                  <li><b>55</b>automated tests</li>
-                  <li><b>Live</b>real-time sync</li>
-                </ul>
-                <ul class="tags"><li>JavaScript</li><li>Python</li><li>PostgreSQL</li><li>Supabase</li></ul>
-                <p class="project__links">
-                  <a href="https://lepak-hyperbloom.vercel.app" target="_blank" rel="noopener noreferrer">Live app <span aria-hidden="true">↗</span></a>
-                  <a href="https://github.com/elkantongg/Lepak" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
-                </p>
+        <div class="flow" id="flow" role="region" aria-roledescription="carousel" aria-label="Projects, newest first">
+          <div class="flow__stage">
+            <ul class="flow__track">
+            <li class="flow__card">
+              <button class="flow__btn" type="button" aria-controls="proj-resolveos" aria-label="01 ResolveOS">
+                <img src="assets/work/resolveos.jpg" width="1280" height="720" loading="lazy" decoding="async" alt="ResolveOS landing page: two sides, one conversation">
+                <span class="flow__cap" aria-hidden="true"><span class="flow__n">01</span><span class="flow__name">ResolveOS</span></span>
+              </button>
+            </li>
+            <li class="flow__card">
+              <button class="flow__btn" type="button" aria-controls="proj-care" aria-label="02 Care+">
+                <img src="assets/work/care.jpg" width="772" height="1016" loading="lazy" decoding="async" alt="Care+ home dashboard: Mdm Lim's day, with steps from her watch compared to a usual day">
+                <span class="flow__cap" aria-hidden="true"><span class="flow__n">02</span><span class="flow__name">Care+</span></span>
+              </button>
+            </li>
+            <li class="flow__card">
+              <button class="flow__btn flow__btn--fit" type="button" aria-controls="proj-wayfound" aria-label="03 Wayfound">
+                <img src="assets/work/wayfound.jpg" width="1792" height="1120" loading="lazy" decoding="async" alt="Wayfound dashboard: the Campus Operations Summit schedule by venue, with the six recovery steps from Detect to Verify">
+                <img class="flow__blur" src="assets/work/wayfound.jpg" alt="" aria-hidden="true" loading="lazy" decoding="async">
+                <span class="flow__cap" aria-hidden="true"><span class="flow__n">03</span><span class="flow__name">Wayfound</span></span>
+              </button>
+            </li>
+            <li class="flow__card">
+              <button class="flow__btn" type="button" aria-controls="proj-lepak" aria-label="04 Lepak">
+                <img src="assets/work/lepak.jpg" width="832" height="1016" loading="lazy" decoding="async" alt="Lepak: 'When are you free?' availability grid, with each friend's hours and the best time highlighted">
+                <span class="flow__cap" aria-hidden="true"><span class="flow__n">04</span><span class="flow__name">Lepak</span></span>
+              </button>
+            </li>
+            </ul>
+          </div>
+          <div class="flow__bar">
+            <button class="flow__arrow" type="button" data-dir="-1" aria-label="Previous project">←</button>
+            <span class="flow__rail" aria-hidden="true"><i></i></span>
+            <p class="flow__count" aria-live="polite"><b>01</b> / 04</p>
+            <button class="flow__arrow" type="button" data-dir="1" aria-label="Next project">→</button>
+          </div>
+        </div>
+
+        <div class="flow__detail">
+          <article class="proj" id="proj-resolveos" aria-labelledby="proj-resolveos-name">
+            <header class="proj__head">
+              <span class="proj__n">01</span>
+              <div class="proj__title">
+                <h3 class="proj__name" id="proj-resolveos-name">ResolveOS</h3>
+                <p class="proj__pitch">Payment disputes, triaged by an agent.</p>
+                <p class="proj__when">PayPal Hackathon · Oct – Nov 2026</p>
               </div>
-            </details>
-          </li>
-          <li class="project reveal">
-            <details>
-              <summary>
-                <span class="project__n">02</span>
-                <span class="project__main">
-                  <span class="project__name">Care+</span>
-                  <span class="project__pitch">One home base for family caregiving.</span>
-                </span>
-                <span class="project__when">SMU · Web Application 2<span class="project__date">Aug – Nov 2026</span></span>
-                <span class="project__plus" aria-hidden="true"></span>
-              </summary>
-              <div class="project__body">
-                <div>
-                  <p>A responsive elderly-care platform, built in a team of 5, that brings appointments, schedules and care responsibilities together for families and caregivers.</p>
-                  <p>I built accessible, senior-facing interfaces and wired shared calendars into the team's FastAPI backend and Supabase.</p>
-                </div>
-                <ul class="project__facts">
-                  <li><b>5</b>person team</li>
-                  <li><b>A11y</b>senior-first UI</li>
-                  <li><b>Shared</b>family calendars</li>
-                </ul>
-                <ul class="tags"><li>Vue 3</li><li>TypeScript</li><li>FastAPI</li><li>Supabase</li></ul>
+              <p class="proj__links"><a class="cta cta--primary" href="https://resolveos-paypal.onrender.com" target="_blank" rel="noopener noreferrer"><span>Live demo</span><span class="cta__arrow" aria-hidden="true">↗</span></a><a class="cta" href="https://github.com/elkantongg/ResolveOS-paypal" target="_blank" rel="noopener noreferrer"><svg class="cta__gh" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>GitHub</span><span class="cta__arrow" aria-hidden="true">↗</span></a></p>
+            </header>
+            <div class="proj__text">
+              <p>An AI-assisted dispute resolution platform that turns messy buyer–merchant disputes into structured workflows with settlement recommendations.</p>
+              <p>An agentic prioritisation engine weighs financial exposure, dispute stage and pending actions to surface urgent cases and recommend next steps.</p>
+            </div>
+            <ul class="proj__facts"><li><b>Agent</b>prioritisation engine</li><li><b>Sandbox</b>PayPal integration</li><li><b>Guided</b>settlement workflows</li></ul>
+            <ul class="tags"><li>Vue 3</li><li>TypeScript</li><li>Vite</li><li>PayPal Sandbox</li></ul>
+          </article>
+          <article class="proj" id="proj-care" aria-labelledby="proj-care-name">
+            <header class="proj__head">
+              <span class="proj__n">02</span>
+              <div class="proj__title">
+                <h3 class="proj__name" id="proj-care-name">Care+</h3>
+                <p class="proj__pitch">One home base for family caregiving.</p>
+                <p class="proj__when">SMU · Web Application 2 · Aug – Nov 2026</p>
               </div>
-            </details>
-          </li>
-          <li class="project reveal">
-            <details>
-              <summary>
-                <span class="project__n">03</span>
-                <span class="project__main">
-                  <span class="project__name">Wayfound</span>
-                  <span class="project__pitch">When the venue falls through, the event doesn't.</span>
-                </span>
-                <span class="project__when">Daytona Hackathon<span class="project__date">Oct 2026</span></span>
-                <span class="project__plus" aria-hidden="true"></span>
-              </summary>
-              <div class="project__body">
-                <img class="project__shot" src="assets/work/wayfound.jpg" width="1280" height="720" loading="lazy" decoding="async" alt="Wayfound title card: autonomous recovery that accounts for everyone">
-                <div>
-                  <p>An AI-powered event recovery platform. When a venue is disrupted, it finds the affected sessions and generates feasible reassignment plans.</p>
-                  <p>Neo4j models the event's dependencies, and a constraint-aware solver keeps venue changes to a minimum.</p>
-                </div>
-                <ul class="project__facts">
-                  <li><b>35</b>validation checks</li>
-                  <li><b>0</b>unresolved constraints</li>
-                  <li><b>Graph</b>dependency model</li>
-                </ul>
-                <ul class="tags"><li>Vue 3</li><li>FastAPI</li><li>Neo4j</li><li>Daytona</li><li>Qwen</li></ul>
-                <p class="project__links">
-                  <a href="https://github.com/elkantongg/Wayfound" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
-                </p>
+              <p class="proj__links"><a class="cta cta--primary" href="https://wad-2-g10-t4-client.vercel.app" target="_blank" rel="noopener noreferrer"><span>Live demo</span><span class="cta__arrow" aria-hidden="true">↗</span></a><a class="cta" href="https://github.com/haoen-01/WAD2G10T4" target="_blank" rel="noopener noreferrer"><svg class="cta__gh" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>GitHub</span><span class="cta__arrow" aria-hidden="true">↗</span></a></p>
+            </header>
+            <div class="proj__text">
+              <p>A responsive elderly-care platform, built in a team of 5, that brings appointments, schedules and care responsibilities together for families and caregivers.</p>
+              <p>I built accessible, senior-facing interfaces and wired shared calendars into the team's FastAPI backend and Supabase.</p>
+            </div>
+            <ul class="proj__facts"><li><b>5</b>person team</li><li><b>A11y</b>senior-first UI</li><li><b>Shared</b>family calendars</li></ul>
+            <ul class="tags"><li>Vue 3</li><li>TypeScript</li><li>FastAPI</li><li>Supabase</li></ul>
+          </article>
+          <article class="proj" id="proj-wayfound" aria-labelledby="proj-wayfound-name">
+            <header class="proj__head">
+              <span class="proj__n">03</span>
+              <div class="proj__title">
+                <h3 class="proj__name" id="proj-wayfound-name">Wayfound</h3>
+                <p class="proj__pitch">When the venue falls through, the event doesn't.</p>
+                <p class="proj__when">Daytona Hackathon · Oct 2026</p>
               </div>
-            </details>
-          </li>
-          <li class="project reveal">
-            <details>
-              <summary>
-                <span class="project__n">04</span>
-                <span class="project__main">
-                  <span class="project__name">ResolveOS</span>
-                  <span class="project__pitch">Payment disputes, triaged by an agent.</span>
-                </span>
-                <span class="project__when">PayPal Hackathon<span class="project__date">Oct – Nov 2026</span></span>
-                <span class="project__plus" aria-hidden="true"></span>
-              </summary>
-              <div class="project__body">
-                <img class="project__shot" src="assets/work/resolveos.jpg" width="1280" height="720" loading="lazy" decoding="async" alt="ResolveOS landing page: two sides, one conversation">
-                <div>
-                  <p>An AI-assisted dispute resolution platform that turns messy buyer–merchant disputes into structured workflows with settlement recommendations.</p>
-                  <p>An agentic prioritisation engine weighs financial exposure, dispute stage and pending actions to surface urgent cases and recommend next steps.</p>
-                </div>
-                <ul class="project__facts">
-                  <li><b>Agent</b>prioritisation engine</li>
-                  <li><b>Sandbox</b>PayPal integration</li>
-                  <li><b>Guided</b>settlement workflows</li>
-                </ul>
-                <ul class="tags"><li>Vue 3</li><li>TypeScript</li><li>Vite</li><li>PayPal Sandbox</li></ul>
-                <p class="project__links">
-                  <a href="https://resolveos-paypal.onrender.com" target="_blank" rel="noopener noreferrer">Live demo <span aria-hidden="true">↗</span></a>
-                  <a href="https://github.com/elkantongg/ResolveOS-paypal" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true">↗</span></a>
-                </p>
+              <p class="proj__links"><a class="cta cta--primary" href="https://github.com/elkantongg/Wayfound" target="_blank" rel="noopener noreferrer"><svg class="cta__gh" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>GitHub</span><span class="cta__arrow" aria-hidden="true">↗</span></a></p>
+            </header>
+            <div class="proj__text">
+              <p>An AI-powered event recovery platform. When a venue is disrupted, it finds the affected sessions and generates feasible reassignment plans.</p>
+              <p>Neo4j models the event's dependencies, and a constraint-aware solver keeps venue changes to a minimum.</p>
+            </div>
+            <ul class="proj__facts"><li><b>35</b>validation checks</li><li><b>0</b>unresolved constraints</li><li><b>Graph</b>dependency model</li></ul>
+            <ul class="tags"><li>Vue 3</li><li>FastAPI</li><li>Neo4j</li><li>Daytona</li><li>Qwen</li></ul>
+          </article>
+          <article class="proj" id="proj-lepak" aria-labelledby="proj-lepak-name">
+            <header class="proj__head">
+              <span class="proj__n">04</span>
+              <div class="proj__title">
+                <h3 class="proj__name" id="proj-lepak-name">Lepak</h3>
+                <p class="proj__pitch">Group outings, minus the group-chat chaos.</p>
+                <p class="proj__when">Hyperbloom Hackathon · Oct 2026</p>
               </div>
-            </details>
-          </li>
-        </ul>
+              <p class="proj__links"><a class="cta cta--primary" href="https://lepak-hyperbloom.vercel.app" target="_blank" rel="noopener noreferrer"><span>Live app</span><span class="cta__arrow" aria-hidden="true">↗</span></a><a class="cta" href="https://github.com/elkantongg/Lepak" target="_blank" rel="noopener noreferrer"><svg class="cta__gh" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>GitHub</span><span class="cta__arrow" aria-hidden="true">↗</span></a></p>
+            </header>
+            <div class="proj__text">
+              <p>A full-stack group planning app that removes the back-and-forth of organising outings: shared availability, venue voting and automated itineraries in one place.</p>
+              <p>Fuzzy place search over ~19,000 Singapore locations, with real-time sync so everyone sees the plan change as it happens.</p>
+            </div>
+            <ul class="proj__facts"><li><b>~19k</b>places searchable</li><li><b>55</b>automated tests</li><li><b>Live</b>real-time sync</li></ul>
+            <ul class="tags"><li>JavaScript</li><li>Python</li><li>PostgreSQL</li><li>Supabase</li></ul>
+          </article>
+        </div>
       </div>
     </section>
 
@@ -381,10 +373,15 @@
         <h2 class="contact__title display-split reveal" id="contact-title">Let's work<br>together</h2>
         <p class="contact__lede reveal">A role, a hackathon team, or an idea that needs building? My inbox is open.</p>
         <div class="contact__actions">
-          <a class="btn btn--red btn--lg" id="email-link" href="#contact" data-u="elkantong" data-d="gmail.com">
-            <span id="email-text">elkantong [at] gmail [dot] com</span>
-          </a>
-          <button class="btn btn--ghost btn--lg" type="button" id="copy-email" hidden>Copy email</button>
+          <div class="mail">
+            <a class="btn btn--red btn--lg mail__link" id="email-link" href="#contact" data-u="elkantong" data-d="gmail.com" title="Open in your mail app">
+              <span id="email-text">elkantong [at] gmail [dot] com</span>
+            </a>
+            <button class="mail__copy" type="button" id="copy-email" aria-label="Copy email address" title="Copy email" hidden>
+              <svg class="mail__icon mail__icon--copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2.5"/><path d="M5 15V6.5A2.5 2.5 0 0 1 7.5 4H15"/></svg>
+              <svg class="mail__icon mail__icon--done" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+            </button>
+          </div>
           <a class="btn btn--ghost btn--lg" href="https://www.linkedin.com/in/elkan-tong-874542372" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true">↗</span></a>
         </div>
         <p class="toast" id="toast" role="status" aria-live="polite"></p>

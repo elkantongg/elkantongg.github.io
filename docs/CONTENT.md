@@ -20,8 +20,8 @@ Source of truth for all visible copy. Facts come from **Elkan's résumé (PDF, p
 - **Skills → Toolkit** (Elkan, 2026-11-12): label "03 / The toolkit", heading "Toolkit.", subheading "Technologies I've worked with across my projects", nav link "Toolkit" (anchor stays `#skills`). No "(hint: press a key)".
 
 ## Featured projects
-Order on site: 01 Lepak · 02 Care+ · 03 Wayfound · 04 ResolveOS (résumé order).
-Screenshots: frames from Elkan's demo videos in `~/Desktop/Hackathons` → `assets/work/*.jpg` (ResolveOS cropped to exclude the webcam). Care+: no video or repo → no image or link.
+Order on site: newest first (Elkan, 2026-11-13): 01 ResolveOS · 02 Care+ · 03 Wayfound · 04 Lepak. The table below keeps résumé order.
+Screenshots: ResolveOS is a frame from Elkan's demo video in `~/Desktop/Hackathons` (cropped to exclude the webcam); Lepak (availability screen, portrait) and Wayfound (live dashboard, landscape, mouse pointer removed) are from Elkan's 2026-11-13 screenshots → `assets/work/*.jpg`. Care+: screenshot of the app's home dashboard (portrait, cropped from Elkan's 2026-11-13 screenshot) → `assets/work/care.jpg`; repo https://github.com/haoen-01/WAD2G10T4 (Elkan, 2026-11-13). Live demo https://wad-2-g10-t4-client.vercel.app (Elkan, 2026-11-13).
 Links (from GitHub, 2026-11-12): Lepak live https://lepak-hyperbloom.vercel.app + repo · Wayfound repo only (README demo URL is a temporary Daytona proxy) · ResolveOS live https://resolveos-paypal.onrender.com (from README; timed out when checked, likely a sleeping free instance) + repo.
 
 | # | Project | Context · Date | Stack | Résumé facts |

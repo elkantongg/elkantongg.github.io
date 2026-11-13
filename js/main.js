@@ -67,6 +67,8 @@ window.addEventListener("resize", onScroll, { passive: true });
 onScroll();
 
 /* ----------------------------------------------------- reveal + counters */
+// A project panel's parts, in build order (built by the crew the first time that project is shown).
+const PROJ_PARTS = [".proj__n", ".proj__name", ".proj__pitch", ".proj__when", ".cta", ".proj__text p", ".proj__facts", ".proj__facts li", ".tags li"];
 // Everything on the page is built by the cursor crew, down to small parts. Containers listed here
 // are built before their parts (builders.js waits for an unbuilt .reveal ancestor).
 const PARTS = [
@@ -74,7 +76,7 @@ const PARTS = [
   ".hero__grid", ".hero__grid .cross", ".hero__hello", ".hero__row", ".hero__lede", ".hero__actions .btn",
   ".hero__meta", ".hero__meta li", ".marquee",
   ".like h3", ".like p",
-  ".project__n", ".project__name", ".project__pitch", ".project__when", ".project__plus",
+  ".flow__stage", ".flow__btn img:not(.flow__blur)", ".flow__cap", ".flow__arrow", ".flow__rail", ".flow__count",
   ".skills__sub", ".skill-card", ".sound", ".kb-stage",
   ".facts > div", ".timeline > li h3", ".timeline > li p",
   ".contact__actions > *", ".footer__inner > *",
@@ -107,7 +109,8 @@ function countUp(dd) {
 const TYPED = [
   ".nav__logo", ".nav__links > li", ".btn", ".hero__hello", ".hero__lede", ".hero__meta li",
   ".label", ".about__lede", ".like h3", ".like p", ".work__count",
-  ".project__n", ".project__name", ".project__pitch", ".project__when",
+  ".flow__cap", ".flow__count", ".proj__n", ".proj__name", ".proj__pitch", ".proj__when",
+  ".proj__text p", ".proj__facts li", ".proj .tags li",
   ".skills__sub", ".skill-card", ".sound", ".resume__lede", ".facts > div", ".timeline > li h3", ".timeline > li p",
   ".contact__lede", ".footer__inner > *",
 ].join(", ");
@@ -134,22 +137,150 @@ initMotion(reducedMotion); // splits headlines into words before they're observe
 initLanyard(reducedMotion); // ID badge that drops into the hero
 $$(".reveal").forEach((el) => revealer.observe(el));
 
-// First time a project opens, the crew builds its body: a slab for the screenshot, typed write-up.
-if (build) {
-  $$(".project details").forEach((d) => {
-    d.addEventListener("toggle", () => {
-      if (!d.open || d.dataset.built) return;
-      d.dataset.built = "1";
-      const shot = $(".project__shot", d);
-      if (shot) {
-        shot.classList.add("is-pending");
-        build(shot, () => { shot.classList.remove("is-pending"); return null; });
-      }
-      const text = $(".project__body > div", d);
-      if (text) { const t = prime(text); build(text, () => t.play()); }
+/* ------------------------------------------------------- work coverflow */
+// Project cards packed in perspective (Elkan's motion.dev reference): the selected card faces front,
+// the others fold away on each side. Drag/swipe with momentum, wheel sideways, arrow keys or click.
+(function coverflow() {
+  const flow = $("#flow");
+  if (!flow) return;
+  const stage = $(".flow__stage", flow);
+  const cards = $$(".flow__card", flow);
+  const btns = cards.map((c) => $(".flow__btn", c));
+  const projs = $$(".proj");
+  const count = $(".flow__count b", flow);
+  const rail = $(".flow__rail", flow);
+  const [prev, next] = $$(".flow__arrow", flow);
+  const n = cards.length;
+  let active = -1, pos = 0, spread = 1, dragged = false;
+  root.classList.add("flow-on");
+
+  const cw = () => cards[0].offsetWidth;
+  function place(p) {
+    const w = cw();
+    cards.forEach((card, i) => {
+      const d = i - p, ad = Math.abs(d), s = Math.sign(d);
+      const near = Math.min(ad, 1), far = Math.max(ad - 1, 0);
+      const x = s * (near * w * 0.74 + far * w * 0.24) * spread;
+      const z = -(near * 170 + far * 46);
+      const rot = -s * near * 58 * spread;
+      card.style.transform = `translateX(${x.toFixed(1)}px) translateZ(${z.toFixed(1)}px) rotateY(${rot.toFixed(2)}deg)`;
+      card.style.zIndex = String(100 - Math.round(ad * 10));
+      btns[i].style.setProperty("--shade", (Math.min(0.6, near * 0.32 + far * 0.1) * spread).toFixed(3));
     });
+  }
+  const timers = new Map();
+  const later = (el, fn, ms) => { clearTimeout(timers.get(el)); timers.set(el, setTimeout(fn, ms)); };
+  // The front card's details open by themselves once the strip has been scrolled into view, and follow
+  // the strip as you swipe, drag, click or use the arrows. The first time a project is shown, the crew
+  // frames the panel and then builds every part of it from nothing; later visits just rise in.
+  const detail = $(".flow__detail");
+  let open = -1, seen = false;
+  const partsOf = (pr) => $$(PROJ_PARTS.join(", "), pr);
+  if (build) { // hidden from the start (set after the reveal observer, so only the crew shows them)
+    detail.classList.add("reveal");
+    projs.forEach((pr) => partsOf(pr).forEach((el) => el.classList.add("reveal")));
+  }
+  function select(i, focus = false) {
+    i = Math.max(0, Math.min(n - 1, i));
+    active = i; pos = i;
+    cards.forEach((c, k) => {
+      c.classList.toggle("is-active", k === i);
+      btns[k].setAttribute("aria-current", k === i ? "true" : "false");
+    });
+    place(pos);
+    count.textContent = String(i + 1).padStart(2, "0");
+    rail.style.setProperty("--p", String(i));
+    prev.disabled = i === 0;
+    next.disabled = i === n - 1;
+    if (focus) btns[i].focus({ preventScroll: true });
+    if (seen) show(i);
+  }
+  function show(i) {
+    if (i === open) return;
+    projs.forEach((pr, k) => { if (k !== i) { clearTimeout(timers.get(pr)); pr.classList.remove("is-active", "is-entering"); } });
+    const pr = projs[i];
+    clearTimeout(timers.get(pr));
+    open = i;
+    detail.classList.add("is-open");
+    if (build && detail.classList.contains("reveal") && !detail.dataset.built) { // the panel outline goes up first
+      detail.dataset.built = "1";
+      build(detail, () => reveal(detail));
+    }
+    pr.classList.add("is-active");
+    if (build && !pr.dataset.built) { // first visit: every part is built by the crew, in page order
+      pr.dataset.built = "1";
+      partsOf(pr).forEach((el) => build(el, () => reveal(el, true)));
+      return;
+    }
+    pr.dataset.built = "1";
+    pr.classList.add("is-entering");
+    later(pr, () => pr.classList.remove("is-entering"), 900);
+  }
+  new IntersectionObserver(([e], io) => { // the first project's details start once the strip is on screen
+    if (!e.isIntersecting) return;
+    io.disconnect();
+    seen = true;
+    show(active);
+  }, { threshold: 0.35 }).observe(stage);
+
+  select(0);
+
+  btns.forEach((b, i) => b.addEventListener("click", (e) => {
+    if (dragged) { e.preventDefault(); return; }
+    select(i);
+  }));
+  prev.addEventListener("click", () => select(active - 1));
+  next.addEventListener("click", () => select(active + 1));
+  flow.addEventListener("keydown", (e) => {
+    if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") return;
+    e.preventDefault();
+    select(active + (e.key === "ArrowRight" ? 1 : -1), e.target.matches(".flow__btn"));
   });
-}
+
+  // drag / swipe: the strip follows the pointer, then lands on the nearest card (thrown with momentum)
+  let startX = 0, startPos = 0, lastX = 0, lastT = 0, vel = 0, id = null;
+  stage.addEventListener("pointerdown", (e) => {
+    if (e.button !== 0) return;
+    id = e.pointerId; startX = lastX = e.clientX; startPos = pos; lastT = performance.now(); vel = 0; dragged = false;
+  });
+  stage.addEventListener("pointermove", (e) => {
+    if (e.pointerId !== id) return;
+    const dx = e.clientX - startX;
+    if (!dragged && Math.abs(dx) < 6) return;
+    if (!dragged) { dragged = true; stage.setPointerCapture(id); stage.classList.add("is-dragging"); }
+    const now = performance.now();
+    vel = 0.75 * vel + 0.25 * ((e.clientX - lastX) / Math.max(1, now - lastT));
+    lastX = e.clientX; lastT = now;
+    let p = startPos - dx / (cw() * 0.55);
+    if (p < 0) p *= 0.35;
+    else if (p > n - 1) p = n - 1 + (p - (n - 1)) * 0.35; // rubber band at the ends
+    pos = p;
+    place(pos);
+  });
+  const end = (e) => {
+    if (e.pointerId !== id) return;
+    id = null;
+    if (!dragged) return;
+    stage.classList.toggle("is-dragging", false);
+    const throwBy = Math.max(-1, Math.min(1, -vel * 0.8)); // a flick moves at most one card further
+    select(Math.round(pos + throwBy));
+    setTimeout(() => { dragged = false; }, 0); // swallow the click that ends a drag
+  };
+  stage.addEventListener("pointerup", end);
+  stage.addEventListener("pointercancel", end);
+
+  // trackpad / shift-wheel sideways steps one card at a time
+  let acc = 0, lock = 0;
+  stage.addEventListener("wheel", (e) => {
+    if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+    e.preventDefault();
+    if (performance.now() < lock) return;
+    acc += e.deltaX;
+    if (Math.abs(acc) > 40) { select(active + Math.sign(acc)); acc = 0; lock = performance.now() + 380; }
+  }, { passive: false });
+
+  window.addEventListener("resize", () => place(pos), { passive: true });
+})();
 
 /* -------------------------------------------------------------- contact */
 (function contact() {
@@ -169,11 +300,12 @@ if (build) {
   const say = (msg) => {
     toast.textContent = msg;
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => { toast.textContent = ""; }, 2600);
+    toastTimer = setTimeout(() => { toast.textContent = ""; copyBtn.classList.remove("is-done"); }, 2600);
   };
   copyBtn.addEventListener("click", async () => {
     try {
       await navigator.clipboard.writeText(address);
+      copyBtn.classList.add("is-done");
       say("Email copied to clipboard.");
     } catch {
       const ta = document.createElement("textarea");
@@ -185,6 +317,7 @@ if (build) {
       let ok = false;
       try { ok = document.execCommand("copy"); } catch { ok = false; }
       ta.remove();
+      copyBtn.classList.toggle("is-done", ok);
       say(ok ? "Email copied to clipboard." : `Copy this: ${address}`);
     }
   });

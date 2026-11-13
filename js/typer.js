@@ -3,7 +3,7 @@
    play() types them in and returns { dur, caret } so the builder cursor can follow the caret.
    When done, the original text nodes are put back (clean DOM for screen readers, copy/paste, kerning). */
 
-const SKIP = ".project__body, .like__art, svg, .caret";
+const SKIP = ".like__art, svg, .caret";
 const TAIL = 0.35; // s the caret blinks after the last character
 
 export function prime(el) {

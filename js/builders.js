@@ -7,7 +7,11 @@
    has already left the screen is snapped in without a cursor.
    Hero: after the intro the crew swarms in, then the whole first screen is built part by part.
    Contact: a bigger crowd gathers and circles in a slowly turning ring (end of the reference).
-   Motion is spring-driven (critically damped), so speed always changes smoothly.
+   Two kinds of motion (D-033). While building, a bot moves like a nanobot (D-031): it darts to the part in
+   short straight hops with small course corrections, on stiff, slightly under-damped springs (quick
+   overshoot, then lock on), leaves a thin blue streak on the dash and buzzes while it holds; drawing the
+   frame and typing stay exact. Otherwise (arriving, wandering, swarming, the contact ring, leaving) it glides
+   on the original soft, critically damped springs and wanders the whole screen at an easy pace.
    Text is typed into its frame (typer.js) while the cursor, now an I-beam, follows the caret; the frame
    stays up until the typing ends. Rows get a highlight bar, media gets a placeholder slab the content
    fades in under, and every drag flashes alignment guides + a live size tag.
@@ -21,20 +25,27 @@ const MAX_WAIT = 1.2; // s a job may queue (only when the agent cap is hit) befo
 const GAP = 0.1; // s between two jobs starting: the page is built one part at a time, quickly
 const GAP_BUSY = 0.04; // ...and faster when a backlog builds up while scrolling
 const FAR = 650; // px: a free crew cursor further than this loses the job to a fresh agent
-const ROWS = ".project, .timeline > li, .nav"; // drawn as a highlight bar sweeping across
+const ROWS = ".timeline > li, .nav"; // drawn as a highlight bar sweeping across
 const SLABS = ".like__art"; // placeholder slabs inside a frame (an <img> job is its own slab)
 const SUBS = ".key"; // small parts outlined inside a frame (keycaps)
 const TAGS = [ // frame tag per element role, most specific first
   [".nav", "navbar"], [".nav__logo", "logo"], [".nav__links > li", "link"], [".nav__toggle", "menu"],
   [".hero__grid", "grid"], [".cross", "marker"], [".marquee", "marquee"],
-  [".label", "label"], ["h1 *, h2, .hero__row", "heading"], ["h3, .project__name", "title"],
-  [".project__n", "index"], [".project__when, .timeline__when", "date"], [".project__plus", "icon"],
-  [".project", "project"], [".timeline > li", "entry"], [".btn, .sound", "button"], [".kb-stage", "keyboard"],
+  [".label", "label"], ["h1 *, h2, .hero__row", "heading"], ["h3", "title"],
+  [".timeline__when, .proj__when", "date"], [".flow__stage", "gallery"], [".flow__cap", "caption"],
+  [".flow__arrow, .cta", "button"], [".flow__rail", "progress"], [".flow__count", "counter"], [".proj__n", "index"],
+  [".proj__facts li", "fact"], [".proj__facts", "facts"], [".flow__detail", "panel"], [".tags li", "tag"], [".timeline > li", "entry"], [".btn, .sound", "button"], [".kb-stage", "keyboard"],
   [".skill-card", "card"], ["img", "image"], [".facts > div", "fact"], [".hero__meta li", "fact"],
   [".footer__inner > *", "footer"], ["p, ul", "text"],
 ];
-// spring stiffness per mode (rad/s): low = lazy glide, high = tight follow
-const OMEGA = { wait: 4, wander: 1.6, swarm: 5, travel: 12, drag: 26, hold: 10, type: 18, idle: 3, orbit: 3.2, leave: 2.2 };
+// spring stiffness per mode (rad/s) and damping ratio (<1 overshoots a little, 1 = no overshoot)
+// building modes (travel, drag, hold, type) are nanobot-stiff; the rest keep the original lazy glide
+const OMEGA = { wait: 4, wander: 1.6, swarm: 5, travel: 30, drag: 30, hold: 20, type: 26, idle: 3, orbit: 3.2, leave: 2.2 };
+const ZETA = { travel: 0.58, drag: 0.9, hold: 0.75 }; // damping ratio; anything not listed is critically damped (1)
+const HOPS = { travel: [0.4, 0.6, 0] }; // darting hops while heading to a job: share of the way (min, max), max pause between hops
+const JITTER = { hold: 4 }; // hover noise while holding a finished frame (px-ish)
+const BUILDING = new Set(["travel", "drag", "hold", "type"]);
+const randn = () => (Math.random() + Math.random() + Math.random() - 1.5) * 2; // cheap ~normal noise
 
 const easeOut = (t) => 1 - Math.pow(1 - t, 3);
 const rand = (a, b) => a + Math.random() * (b - a);
@@ -70,7 +81,10 @@ export function initBuilders(reducedMotion) {
   }
   function cursor(red = false) {
     const p = edgePoint();
-    return { x: p.x, y: p.y, vx: 0, vy: 0, tx: p.x, ty: p.y, a: 0, mode: "wait", job: null, t0: 0, next: 0, click: -9, red, slot: 0, r: 1 };
+    return {
+      x: p.x, y: p.y, vx: 0, vy: 0, tx: p.x, ty: p.y, a: 0, mode: "wait", job: null, t0: 0, next: 0, click: -9, red, slot: 0, r: 1,
+      hx: p.x, hy: p.y, hopT: 0, pause: 0, nx: 0, ny: 0, trail: [],
+    };
   }
   function makeCrew() {
     const n = w < 640 ? 6 : 10;
@@ -228,16 +242,41 @@ export function initBuilders(reducedMotion) {
   }
 
   /* ----------------------------------------------------------- tick */
+  // Hop planner: instead of one long glide, a bot darts to an intermediate point part of the way there,
+  // slightly off the straight line, then corrects course; close to the target it locks on exactly.
+  function hop(c) {
+    const cfg = HOPS[c.mode];
+    const dx = c.tx - c.x, dy = c.ty - c.y, d = Math.hypot(dx, dy);
+    if (!cfg || d < 44) { c.hx = c.tx; c.hy = c.ty; return; }
+    if (now < c.pause) return;
+    const reached = Math.hypot(c.hx - c.x, c.hy - c.y) < 10;
+    if (!reached && now < c.hopT) return;
+    if (reached && cfg[2] && c.pause < c.hopT) { c.pause = now + rand(0.02, cfg[2]); c.hopT = c.pause; return; } // tiny scan pause
+    const L = clamp(d * rand(cfg[0], cfg[1]), 40, 240);
+    const ux = dx / d, uy = dy / d, side = rand(-0.28, 0.28) * L;
+    c.hx = c.x + ux * L - uy * side;
+    c.hy = c.y + uy * L + ux * side;
+    c.hopT = now + 0.32;
+  }
   function integrate(c, dt) {
-    const om = OMEGA[c.mode] || 4;
+    const om = OMEGA[c.mode] || 4, z = ZETA[c.mode] ?? 1;
+    hop(c);
+    // hover noise (Ornstein-Uhlenbeck): a restless drift of a few px that never fully settles
+    const sig = JITTER[c.mode] || 0;
+    c.nx += -6 * c.nx * dt + sig * Math.sqrt(dt) * randn();
+    c.ny += -6 * c.ny * dt + sig * Math.sqrt(dt) * randn();
+    if (!sig) { c.nx *= 0.8; c.ny *= 0.8; }
+    const gx = c.hx + c.nx, gy = c.hy + c.ny;
     const steps = Math.ceil(dt / (1 / 120));
     const s = dt / steps;
-    for (let i = 0; i < steps; i++) { // critically damped spring: smooth start, smooth stop
-      c.vx += (om * om * (c.tx - c.x) - 2 * om * c.vx) * s;
-      c.vy += (om * om * (c.ty - c.y) - 2 * om * c.vy) * s;
+    for (let i = 0; i < steps; i++) { // spring per mode: nanobot-stiff while building, soft glide otherwise
+      c.vx += (om * om * (gx - c.x) - 2 * z * om * c.vx) * s;
+      c.vy += (om * om * (gy - c.y) - 2 * z * om * c.vy) * s;
       c.x += c.vx * s;
       c.y += c.vy * s;
     }
+    c.trail.push(c.x, c.y);
+    if (c.trail.length > 16) c.trail.splice(0, 2);
   }
 
   function step(c, dt) {
@@ -358,10 +397,27 @@ export function initBuilders(reducedMotion) {
     tag(job.tag, x - 0.5, y - 17, fade);
   }
 
+  function drawTrail(c) { // thin streak behind a fast dash, fading towards the tail
+    const t = c.trail, n = t.length / 2;
+    const speed = Math.hypot(c.vx, c.vy);
+    if (c.a < 0.05 || n < 3 || speed < 260 || c.mode !== "travel") return; // only the dash to a job streaks
+    const k = clamp((speed - 260) / 900, 0, 1) * c.a;
+    ctx.lineCap = "round";
+    for (let i = 1; i < n; i++) {
+      ctx.strokeStyle = `rgba(${BLUE}, ${(i / n) * 0.55 * k})`;
+      ctx.lineWidth = 0.6 + (i / n) * 1.2;
+      ctx.beginPath();
+      ctx.moveTo(t[(i - 1) * 2], t[(i - 1) * 2 + 1]);
+      ctx.lineTo(t[i * 2], t[i * 2 + 1]);
+      ctx.stroke();
+    }
+  }
+
   function drawCursor(c) {
     if (c.a < 0.02) return;
     ctx.save();
-    ctx.translate(c.x, c.y);
+    const buzz = c.mode === "travel" || c.mode === "hold" ? 0.35 : 0; // nanobot buzz only while on a job
+    ctx.translate(c.x + rand(-buzz, buzz), c.y + rand(-buzz, buzz));
     const pulse = now - c.click;
     if (pulse < 0.35) {
       ctx.strokeStyle = `rgba(${BLUE}, ${(1 - pulse / 0.35) * 0.8})`;
@@ -390,7 +446,7 @@ export function initBuilders(reducedMotion) {
       ctx.stroke();
     } else {
       // lean slightly into the direction of travel
-      ctx.rotate(clamp(c.vx / 4000, -0.25, 0.25));
+      ctx.rotate(clamp(c.vx / (BUILDING.has(c.mode) ? 5000 : 4000), -0.25, 0.25));
       ctx.globalAlpha = c.a;
       ctx.beginPath();
       ctx.moveTo(0, 0); ctx.lineTo(0, 16); ctx.lineTo(4.3, 12.3); ctx.lineTo(7, 18.2);
@@ -429,6 +485,7 @@ export function initBuilders(reducedMotion) {
     }
     ctx.clearRect(0, 0, w, h);
     jobs.forEach((j) => { if (j.state === "drag" || j.state === "built") drawFrame(j); });
+    crowd.forEach(drawTrail); temps.forEach(drawTrail); crew.forEach(drawTrail);
     crowd.forEach(drawCursor);
     temps.forEach(drawCursor);
     crew.forEach(drawCursor);
