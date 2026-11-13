@@ -237,14 +237,14 @@ $$(".reveal").forEach((el) => revealer.observe(el));
       sync();
     }, 150);
   }
-  // "At the project": you've scrolled past the cards, i.e. the arrows bar is in the top 45% of the screen.
-  // (Measured on the bar, not the panel, because the panel moves as it unfolds.)
+  // "At the project": the details area is clearly on screen, i.e. the arrows bar (the panel starts just below
+  // it) is in the top 75% of the screen. Measured on the bar, not the panel, because the panel moves as it unfolds.
   const bar = $(".flow__bar", flow);
   let checking = false;
   const check = () => {
     checking = false;
     const was = panelInView;
-    panelInView = bar.getBoundingClientRect().bottom < innerHeight * 0.45;
+    panelInView = bar.getBoundingClientRect().bottom < innerHeight * 0.75;
     if (panelInView && !was) sync();
   };
   const onScroll = () => { if (!checking) { checking = true; requestAnimationFrame(check); } };

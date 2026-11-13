@@ -262,7 +262,7 @@ html.js:not(.no-intro) .intro {
   font-family: var(--display); font-weight: 400; text-transform: uppercase;
   font-size: clamp(2.9rem, 8vw, 6.8rem); line-height: 0.95; letter-spacing: 0.005em;
 }
-.section { padding: clamp(84px, 12vw, 160px) 0; position: relative; }
+.section { padding: clamp(56px, 7vw, 100px) 0 clamp(84px, 12vw, 160px); position: relative; }
 .tags { display: flex; flex-wrap: wrap; gap: 8px; }
 .tags li {
   font-size: 0.75rem; font-weight: 600; letter-spacing: 0.04em;
@@ -558,7 +558,7 @@ html.ready .like:not(.in) .like__art * { animation-play-state: paused; }
 /* --------------------------------------------------------------------------
    Work
    -------------------------------------------------------------------------- */
-.work { background: var(--bg-2); border-block: 1px solid var(--line); }
+.work { border-block: 1px solid var(--line); }
 .work__head { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; margin-bottom: 56px; }
 .work__count {
   font-family: var(--display); font-size: clamp(5rem, 14vw, 12rem); line-height: 0.8;
