@@ -30,8 +30,10 @@ Verified 2026-11-12 in the Claude desktop app's built-in browser (Chromium) at d
 | 04 Journey (facts + experience timeline with scroll-filled rail) | verified | Résumé PDF removed from the site and the repo (D-014); still in git history (commit 09f5576). Nav link renamed "Journey" (#journey) |
 | Contact (email, copy, LinkedIn) + footer | verified | `mailto:` assembled correctly; copy button shown. Clipboard copy itself not tested |
 | Favicon | implemented | `favicon.svg` added; not visually checked |
-| Security headers / hosting config | planned | Blocked on hosting decision |
-| SEO extras (og:image, canonical URL, sitemap, robots) | planned | Needs domain |
+| Deployment (GitHub Pages) | verified | Live at https://elkantongg.github.io/ since 2026-11-13; checked in the in-app browser: page renders, all CSS/JS/fonts/images/Three.js return 200, no console errors |
+| Security headers | planned | GitHub Pages can't set custom HTTP headers; only the meta CSP applies (HTTPS is enforced) |
+| Repo hardening | implemented | 2026-11-13: ruleset "Protect main" (no force-push, no deletion), Actions limited to GitHub-owned, Wiki/Projects off; secret scanning + push protection already on. Pages rebuild after the change succeeded and the site loads cleanly. Elkan to confirm GitHub 2FA |
+| SEO extras (og:image, canonical URL, sitemap, robots) | planned | Can use https://elkantongg.github.io/ now |
 
 ## Known issues
 - Not tested: Safari/Firefox (CSS 3D keyboard, `::details-content` animation), real touch devices, `prefers-reduced-motion`, no-JS fallback, keyboard-only navigation, screen readers.
@@ -52,10 +54,10 @@ Verified 2026-11-12 in the Claude desktop app's built-in browser (Chromium) at d
 1. Elkan to confirm the About headline ("Curious builder / Disciplined by habit", Claude draft) and listen to the new keycap sound.
 1a. Elkan to review the lanyard badge (wording on the card is a Claude draft) and try the QR with a phone camera; (already committed and pushed in eb31cbf).
 2. Test in Safari and Firefox, and on a real phone (incl. dragging the lanyard by touch and 3D performance on low-end phones).
-3. Answer open questions; choose hosting; add security headers; deploy.
+3. Answer open questions; add SEO extras for the live URL.
 
 ## Open questions (need Elkan)
 - Audience / positioning (recruiters? clients? hackathon teams?)
-- Hosting platform and domain
+- Custom domain later? (e.g. a free `.me` / `.tech` for 1 year via the GitHub Student Pack)
 - Project links (repos / demos) for Lepak, Care+, Wayfound, ResolveOS; show GitHub profile?
 - Approve or edit the *(Claude wording)* copy

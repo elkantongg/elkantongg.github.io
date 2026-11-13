@@ -5,7 +5,8 @@ Personal developer portfolio for **Elkan Tong Kai En**, BSc Information Systems 
 - **Purpose:** show who Elkan is, what they build, and how to reach them.
 - **Positioning:** a full-stack builder who finds real-world friction and ships the fix (tagline: *"Not just code. What it fixes."*).
 - **Audience:** TBD (recruiters / clients / hackathon teams — not yet confirmed).
-- **Repo:** https://github.com/elkantongg/portfolio (public, branch `main`).
+- **Repo:** https://github.com/elkantongg/elkantongg.github.io (public, branch `main`; renamed from `portfolio` 2026-11-13).
+- **Live:** https://elkantongg.github.io/ (GitHub Pages, auto-deploys on every push to `main`).
 
 ## Vision (from Elkan's reference videos)
 Elkan sent five TikTok screen recordings as inspiration. They are not in the repo (D-009), but each is described in detail in `docs/DESIGN.md` → *References*. Read that before any visual work. In short:

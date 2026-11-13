@@ -36,7 +36,7 @@ docs/             project documentation (start at CLAUDE.md)
 
 ## Deploy
 
-TBD.
+Live at https://elkantongg.github.io/ via GitHub Pages. Pushing to `main` redeploys automatically; there is no build step.
 
 ## Credits
 

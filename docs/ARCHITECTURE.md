@@ -4,7 +4,7 @@
 - **Static site:** HTML + CSS + vanilla JavaScript (ES modules). No framework, no build step, no package manager (D-002).
 - **Runtime dependencies:** Three.js r170 (MIT, `js/vendor/three.module.min.js` + `RoomEnvironment.js` with its import rewritten to the local file; licence in `js/vendor/three.LICENSE`). Libraries are allowed since D-025; vendor them into the repo (no CDN) to keep the CSP and privacy. No third-party network requests (D-003).
 - **Assets:** Anton + Inter woff2 (`@fontsource` 5.2.7, OFL); brand icons from Simple Icons v16.30.0 (CC0), compiled to `js/icons.js`.
-- **Hosting / deployment:** TBD. **Domain:** TBD. **Analytics:** none (TBD if wanted — must stay privacy-respecting).
+- **Hosting / deployment:** GitHub Pages, served from `main` at the repo root; every push to `main` redeploys (about a minute). HTTPS enforced. **Domain:** `elkantongg.github.io` (free; custom domain possible later, D-027). **Analytics:** none (TBD if wanted — must stay privacy-respecting).
 
 ## File layout
 ```
