@@ -128,18 +128,23 @@ function reveal(el, typed = false) {
   return typer ? typer.play() : null;
 }
 const build = initBuilders(reducedMotion); // cursor crew frames each element before it appears
-const revealer = new IntersectionObserver((entries) => {
+function onReveal(entries, obs) {
   entries.forEach((entry) => {
     if (!entry.isIntersecting) return;
     const el = entry.target;
-    revealer.unobserve(el);
+    obs.unobserve(el);
     if (!build) { reveal(el); return; }
     build(el, () => { el.style.setProperty("--rd", "0s"); return reveal(el, true); });
   });
-}, { threshold: 0 }); // building starts the moment any pixel is on screen
+}
+const revealer = new IntersectionObserver(onReveal, { threshold: 0 }); // building starts the moment any pixel is on screen
+// ...except the keyboard: its stage is tall with the board centred, so a first-pixel trigger built it
+// (and popped the keys) while the board was still below the fold. It waits until half the stage is in view.
+const LATE = ".kb-stage";
+const lateRevealer = new IntersectionObserver(onReveal, { threshold: 0.5 });
 initMotion(reducedMotion); // splits headlines into words before they're observed
 initLanyard(reducedMotion); // ID badge that drops into the hero
-$$(".reveal").forEach((el) => revealer.observe(el));
+$$(".reveal").forEach((el) => (el.matches(LATE) ? lateRevealer : revealer).observe(el));
 
 /* ------------------------------------------------------- work coverflow */
 // Project cards packed in perspective (Elkan's motion.dev reference): the selected card faces front,

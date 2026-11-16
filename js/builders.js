@@ -147,7 +147,7 @@ export function initBuilders(reducedMotion) {
     return aj.state === "queued" || aj.state === "assigned" ? "wait" : false;
   };
   function snap(job) {
-    job.state = "built"; job.p = 1; job.tBuilt = now;
+    job.state = "built"; job.p = job.px = job.py = 1; job.tBuilt = now;
     finish(job);
   }
   function flush() {
@@ -160,7 +160,7 @@ export function initBuilders(reducedMotion) {
   function request(el, cb, notBefore = 0) {
     if (off || document.hidden) { built++; if (cb) cb(); return; }
     const job = {
-      el, cb, state: "queued", tq: now, notBefore, p: 0, done: false, tShow: 0, extra: 0, caret: null,
+      el, cb, state: "queued", tq: now, notBefore, p: 0, px: 0, py: 0, done: false, tShow: 0, extra: 0, caret: null,
       tag: tagOf(el), row: el.matches(ROWS),
       slabs: el.matches("img") ? [el] : Array.from(el.querySelectorAll(SLABS)),
       subs: Array.from(el.querySelectorAll(SUBS)), drag: 0.4,
@@ -223,6 +223,8 @@ export function initBuilders(reducedMotion) {
   // while cursors stream in or leave for a job: each joiner takes the free slot nearest to it.
   let slots = [];
   const freeSlot = () => slots.indexOf(null) >= 0;
+  // seats are counted for crew + crowd; stray agents only borrow spare ones and give them back on demand
+  const bumpable = () => temps.find((t) => t.mode === "orbit" && t.gslot != null);
   function claimSlot(c, g) {
     let best = -1, bestD = Infinity;
     const pts = sphereOf(slots.length).pts;
@@ -444,6 +446,24 @@ export function initBuilders(reducedMotion) {
     if (c.trail.length > 16) c.trail.splice(0, 2);
   }
 
+  // The frame's moving corner is wherever the cursor tip is (it never runs ahead of it, never shrinks).
+  // An axis whose end is off screen (cursor clamped to the edge) keeps to the eased schedule instead.
+  function pull(c, job) {
+    const f = frameOf(job.el);
+    if (job.done) job.px = job.py = 1;
+    else {
+      const pt = easeOut(clamp((now - job.td) / job.drag, 0, 1));
+      const yOff = f.y + f.h > h - 8 || f.y < 8;
+      job.px = Math.max(job.px, clamp((c.x - f.x) / Math.max(1, f.w), 0, 1));
+      job.py = yOff ? Math.max(job.py, pt) : Math.max(job.py, clamp((c.y - f.y) / Math.max(1, f.h), 0, 1));
+      // the spring settles asymptotically: once the cursor is within 1.5px of the far corner, it's there
+      // (or soon after, if the page scrolling under it keeps the corner moving)
+      const there = (1 - job.px) * f.w < 1.5 && (yOff || (1 - job.py) * f.h < 1.5);
+      if (pt >= 1 && (there || now - job.td > job.drag + 0.35)) job.px = job.py = 1;
+    }
+    job.p = Math.min(job.px, job.py);
+    if (job.p >= 1) { job.state = "built"; job.tBuilt = now; setMode(c, "hold"); c.click = now; }
+  }
   function step(c, dt) {
     const job = c.job;
     if (c.mode === "travel") {
@@ -457,10 +477,10 @@ export function initBuilders(reducedMotion) {
       }
     } else if (c.mode === "drag") {
       const f = frameOf(job.el);
-      job.p = job.done ? 1 : easeOut(clamp((now - job.td) / job.drag, 0, 1));
-      c.tx = f.x + f.w * job.p;
-      c.ty = clamp(f.y + f.h * job.p, 8, h - 8);
-      if (job.p >= 1) { job.state = "built"; job.tBuilt = now; setMode(c, "hold"); c.click = now; }
+      // the eased path only steers the cursor; the frame itself is sized from the cursor (after integrate)
+      const pt = job.done ? 1 : easeOut(clamp((now - job.td) / job.drag, 0, 1));
+      c.tx = f.x + f.w * pt;
+      c.ty = clamp(f.y + f.h * pt, 8, h - 8);
     } else if (c.mode === "hold") {
       if (now - job.tBuilt >= HOLD && (!job.prev || job.prev.done)) {
         finish(job);
@@ -476,11 +496,12 @@ export function initBuilders(reducedMotion) {
       if (now - c.t0 > 0.6) setMode(c, "idle");
     }
     if (free(c)) {
-      if (ringOn && now - ringSince > 1.4 && (c.red || freeSlot())) setMode(c, "orbit"); // everyone free joins the globe
+      if (ringOn && now - ringSince > 1.4 && (c.red || freeSlot() || (!c.temp && bumpable()))) setMode(c, "orbit"); // everyone free joins the globe
       else if (c.temp) { if (now > c.next) leave(c); }
       else if (now > c.next) wander(c);
     }
     integrate(c, dt);
+    if (c.mode === "drag") pull(c, job);
     if (c.mode === "orbit") { // once arrived, lock onto the moving globe node so the shape stays crisp
       const k = clamp((now - c.t0 - 1.1) / 1.3, 0, 1)
       c.x += (c.tx - c.x) * k; c.y += (c.ty - c.y) * k;
@@ -528,7 +549,7 @@ export function initBuilders(reducedMotion) {
     const fade = job.done ? clamp(1 - (now - job.tShow - job.extra) / FADE, 0, 1) : 1;
     if (fade <= 0) return;
     const dragging = job.state === "drag";
-    const fw = f.w * job.p, fh = f.h * job.p;
+    const fw = f.w * job.px, fh = f.h * job.py; // corner = cursor tip while dragging
     const x = Math.round(f.x) + 0.5, y = Math.round(f.y) + 0.5;
     ctx.lineWidth = 1;
     if (dragging) { // alignment guides flash while the frame is drawn
@@ -654,6 +675,7 @@ export function initBuilders(reducedMotion) {
       if (c.mode !== "orbit") return;
       if (c.nucleus) { if (c.gslot != null) { slots[c.gslot] = null; c.gslot = null; } nucleusTarget(c); return; }
       if (c.gslot == null) claimSlot(c, geo);
+      if (c.gslot == null && !c.temp) { const t = bumpable(); if (t) { leave(t); claimSlot(c, geo); } } // a crew bot back from a job takes its seat back
       if (c.gslot == null) { if (c.temp) leave(c); else wander(c); return; } // globe full
       ringTarget(c);
     });
