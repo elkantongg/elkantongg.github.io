@@ -219,8 +219,9 @@ export function initBuilders(reducedMotion) {
   const FOCAL = 9; // perspective strength (in globe radii)
   let geo = null; // this frame's globe geometry, for the lattice draw
   let lattice = null; // cached Fibonacci sphere { n, pts, links }
-  // Globe slots are fixed when the contact section opens (crew + crowd), so the lattice never re-forms
-  // while cursors stream in or leave for a job: each joiner takes the free slot nearest to it.
+  // Globe slots are set when the contact section opens (crew + crowd), so the lattice doesn't re-form
+  // while cursors stream in or leave for a job: each joiner takes the free slot nearest to it
+  // (a slot is only added if a crew/crowd cursor can't get one any other way, see seat()).
   let slots = [];
   const freeSlot = () => slots.indexOf(null) >= 0;
   // seats are counted for crew + crowd; stray agents only borrow spare ones and give them back on demand
