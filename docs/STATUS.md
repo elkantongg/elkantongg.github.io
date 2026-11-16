@@ -2,7 +2,7 @@
 
 States: **planned** → **in progress** → **implemented** (code exists, not checked in a browser) → **verified** (checked in a browser; note how/where).
 
-_Last updated: 2026-11-13_
+_Last updated: 2026-11-16_
 
 ## Features
 Verified 2026-11-12 in the Claude desktop app's built-in browser (Chromium) at desktop 1024×600, tablet 768×1024 and mobile 375×812. No console errors; every request goes to the site itself (no third-party calls); no horizontal scroll at any tested width.
@@ -27,8 +27,10 @@ Verified 2026-11-12 in the Claude desktop app's built-in browser (Chromium) at d
 | 01 About section (headline, lede, 3 animated tiles) | verified | Replaced the Idea section (D-019). Lede + tile text rewritten by Elkan 2026-11-12; headline still a Claude draft |
 | 02 Work section (4 expandable projects) | verified | Expand works; mobile meta reads "Hyperbloom Hackathon · Oct 2026" |
 | Nanobot motion while building only (D-031, D-033) | verified (merged to main 2026-11-13) | 2026-11-13, headless Chrome 1280×800: idle frames show full-size cursors spread across the screen gliding as before; Work build frames show darting dashes with streaks onto each job; 61fps, no console errors. Not tested: phones, low-end devices |
+| Frame drag driven by the cursor (D-038): the frame's moving corner is the cursor tip | verified | 2026-11-16: offline re-run of the spring maths (gap was up to 38/105/158px for tag/heading/panel, now 0; drags 0.02–0.06s longer); built-in browser: a mid-drag frame's width ended exactly at the crosshair; all 24 first-screen parts built, no console errors |
+| Contact cursor globe (D-037) with no stray cursors (D-039) | verified | 2026-11-16, headless Chrome (installed Google Chrome over CDP) at 1440×900 and 1000×800: nav click, full scroll, jump, out-and-back scrolling; a temporary in-page probe counted 68 cursors on screen = 67 seats + red nucleus, 0 strays, sampled 3–15s after arrival. The version before the fix left 3–5 wandering after a nav click. Not tested: phones (flat ring), Safari/Firefox |
 | Work coverflow (D-028–D-034): 3D landscape card strip with pitch captions, newest first, details open and build by themselves on scroll/swipe, try-it buttons | verified (merged to main 2026-11-13) | 2026-11-13, headless Chrome (playwright-core + installed Google Chrome) at 1280×800 and 390×844: every panel part's on-screen opacity sampled each frame stayed 0 until the crew built it (17/17 parts, ResolveOS on scroll, Care+ after a drag with no click; phone: Wayfound after a drag); no console errors. Built-in browser pane was hidden (animations paused), so not used. Not tested: real touch swipe, trackpad sideways scroll, Safari/Firefox |
-| 03 Toolkit 3D keyboard (renamed from Skills 2026-11-12: "Toolkit." + subheading, label and nav link) | verified | Rename checked 2026-11-12 in headless Chrome at 1280×800 and 390×844: heading, subheading (typed in by the builders) and nav link render, no horizontal scroll. Earlier: Keycaps taller, rounder, glossy; keys pop up in a wave on entry; active key stays raised (2026-11-12 feedback). Renders on desktop/tablet/mobile; auto-demo selects Vue 3; typing "p" → Python, again → PostgreSQL; click selects. Sound toggle not tested (audio can't be checked here) |
+| 03 Toolkit 3D keyboard (renamed from Skills 2026-11-12: "Toolkit." + subheading, label and nav link) | verified | Rename checked 2026-11-12 in headless Chrome at 1280×800 and 390×844: heading, subheading (typed in by the builders) and nav link render, no horizontal scroll. Earlier: Keycaps taller, rounder, glossy; keys pop up in a wave on entry; active key stays raised (2026-11-12 feedback). Build trigger moved to half the stage in view (D-040), verified 2026-11-16 in the built-in browser. Renders on desktop/tablet/mobile; auto-demo selects Vue 3; typing "p" → Python, again → PostgreSQL; click selects. Sound toggle not tested (audio can't be checked here) |
 | 04 Journey (facts + experience timeline with scroll-filled rail) | verified | Résumé PDF removed from the site and the repo (D-014); still in git history (commit 09f5576). Nav link renamed "Journey" (#journey) |
 | Contact (email, copy, LinkedIn) + footer | verified | One red pill: address is a `mailto:` link, copy icon beside it (icon flips to a tick, toast confirms). Real-click copy checked in the in-app browser 2026-11-13, desktop + 375px |
 | Favicon | implemented | `favicon.svg` added; not visually checked |
@@ -46,6 +48,8 @@ Verified 2026-11-12 in the Claude desktop app's built-in browser (Chromium) at d
 - Not tested: Safari/Firefox (CSS 3D keyboard, `::details-content` animation), real touch devices, `prefers-reduced-motion`, no-JS fallback, keyboard-only navigation, screen readers.
 - Copy marked *(Claude wording)* in CONTENT.md not yet reviewed by Elkan.
 - Testing tip: Python's `http.server` lets the browser cache files; force-reload after edits or you'll test stale CSS/JS.
+- Live site caching: GitHub Pages serves JS/CSS with `cache-control: max-age=600` and the scripts carry no version tag, so for up to 10 minutes after a push a browser can keep running the old code (2026-11-16: the stray-cursor screenshot after d6abcab was most likely this). Hard-refresh (Cmd+Shift+R) to check a fresh deploy. Not fixed.
+- Suspected, not checked: on the first screen ~25 parts are built one after another and each has a 3s failsafe, so parts late in that queue may appear before their bot arrives (frame drawn over already-visible content). Needs timing in a visible browser.
 
 ## Fixed during verification (2026-11-12)
 - Mobile menu button sat mid-header instead of right (flex order).
