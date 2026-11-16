@@ -9,7 +9,7 @@
    Contact: a bigger crowd condenses into a turning 3D globe, like the new element taking shape in
    Iron Man 2: a round lattice of cursors (depth-shaded, linked by a geodesic mesh of struts, a soft rim
    light) glowing a dim hologram blue. The red lead cursor is the nucleus at the centre. Every cursor that
-   is free joins (crew, crowd and stray agents), and the lattice re-forms around however many there are. Narrow screens keep a flat ring around the email button.
+   is free joins: crew and crowd always get a seat (a stray agent gives its seat up, or one is added), so no cursor is left wandering. Narrow screens keep a flat ring around the email button.
    Two kinds of motion (D-033). While building, a bot moves like a nanobot (D-031): it darts to the part in
    short straight hops with small course corrections, on stiff, slightly under-damped springs (quick
    overshoot, then lock on), leaves a thin blue streak on the dash and buzzes while it holds; drawing the
@@ -73,7 +73,7 @@ export function initBuilders(reducedMotion) {
   const cap = () => (w < 640 ? 22 : 40); // most cursors on screen at once
   let w = 0, h = 0, dpr = 1, raf = 0, now = 0, off = false;
   let built = 0, heroStarted = false, lastStart = -9, lastJob = null;
-  let ringOn = false, ringSince = 0;
+  let ringOn = false, ringSince = 0, ringSession = 0;
   const jobs = [];
   const crew = []; // permanent builders
   const temps = []; // agents spawned on demand; they leave when their job is done
@@ -236,6 +236,16 @@ export function initBuilders(reducedMotion) {
     });
     if (best >= 0) { slots[best] = c; c.gslot = best; }
   }
+  // Every crew/crowd cursor on screen must end up on the globe: take a free seat, else bump a stray
+  // agent (it flies off), else add a seat (the lattice glides into its new shape).
+  let reshuffle = -9;
+  function seat(c, g) {
+    claimSlot(c, g);
+    if (c.gslot != null || c.temp) return;
+    const t = bumpable();
+    if (t) leave(t); else { slots.push(null); reshuffle = now; }
+    claimSlot(c, g);
+  }
   const sprite = document.createElement("canvas"); // soft cyan glow dot, drawn additively under each node
   sprite.width = sprite.height = 64;
   {
@@ -297,6 +307,7 @@ export function initBuilders(reducedMotion) {
   function setRing(on) {
     if (on === ringOn) return;
     ringOn = on; ringSince = now;
+    const session = ++ringSession;
     if (on) {
       const n = w < 640 ? 14 : w < 980 ? 26 : 58;
       slots = new Array(crew.length - (w >= 980 || !ringBtn ? 1 : 0) + n).fill(null); // on the globe the red lead is the nucleus, not a slot
@@ -304,7 +315,7 @@ export function initBuilders(reducedMotion) {
         const c = cursor();
         c.r = rand(0.9, 1.1);
         crowd.push(c);
-        setTimeout(() => { if (ringOn) setMode(c, "orbit"); }, 600 + i * 40); // stream in, one after another
+        setTimeout(() => { if (ringOn && session === ringSession) setMode(c, "orbit"); }, 600 + i * 40); // stream in, one after another (a stale timer from an earlier visit does nothing)
       }
     } else {
       crowd.forEach((c) => { const p = edgePoint(60); setMode(c, "leave", p.x, p.y); });
@@ -496,14 +507,14 @@ export function initBuilders(reducedMotion) {
       if (now - c.t0 > 0.6) setMode(c, "idle");
     }
     if (free(c)) {
-      if (ringOn && now - ringSince > 1.4 && (c.red || freeSlot() || (!c.temp && bumpable()))) setMode(c, "orbit"); // everyone free joins the globe
+      if (ringOn && now - ringSince > 1.4 && (!c.temp || freeSlot())) setMode(c, "orbit"); // everyone free joins the globe
       else if (c.temp) { if (now > c.next) leave(c); }
       else if (now > c.next) wander(c);
     }
     integrate(c, dt);
     if (c.mode === "drag") pull(c, job);
     if (c.mode === "orbit") { // once arrived, lock onto the moving globe node so the shape stays crisp
-      const k = clamp((now - c.t0 - 1.1) / 1.3, 0, 1)
+      const k = clamp((now - c.t0 - 1.1) / 1.3, 0, 1) * clamp((now - reshuffle) / 1.1, 0.06, 1); // glide if a seat was added
       c.x += (c.tx - c.x) * k; c.y += (c.ty - c.y) * k;
       c.vx *= 1 - k; c.vy *= 1 - k;
     }
@@ -674,9 +685,8 @@ export function initBuilders(reducedMotion) {
       c.nucleus = !!(c.red && c.mode === "orbit" && geo && geo.globe);
       if (c.mode !== "orbit") return;
       if (c.nucleus) { if (c.gslot != null) { slots[c.gslot] = null; c.gslot = null; } nucleusTarget(c); return; }
-      if (c.gslot == null) claimSlot(c, geo);
-      if (c.gslot == null && !c.temp) { const t = bumpable(); if (t) { leave(t); claimSlot(c, geo); } } // a crew bot back from a job takes its seat back
-      if (c.gslot == null) { if (c.temp) leave(c); else wander(c); return; } // globe full
+      if (c.gslot == null) seat(c, geo);
+      if (c.gslot == null) { leave(c); return; } // only a stray agent can miss out, and it flies off
       ringTarget(c);
     });
     crew.forEach((c, i) => { c.slot = i; step(c, dt); });
