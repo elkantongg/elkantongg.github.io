@@ -6,7 +6,10 @@
    in from the nearest side and leaves when done, so scrolling is built continuously. Anything that
    has already left the screen is snapped in without a cursor.
    Hero: after the intro the crew swarms in, then the whole first screen is built part by part.
-   Contact: a bigger crowd gathers and circles in a slowly turning ring (end of the reference).
+   Contact: a bigger crowd condenses into a turning 3D globe, like the new element taking shape in
+   Iron Man 2: a round lattice of cursors (depth-shaded, linked by a geodesic mesh of struts, a soft rim
+   light) glowing a dim hologram blue. The red lead cursor is the nucleus at the centre. Every cursor that
+   is free joins (crew, crowd and stray agents), and the lattice re-forms around however many there are. Narrow screens keep a flat ring around the email button.
    Two kinds of motion (D-033). While building, a bot moves like a nanobot (D-031): it darts to the part in
    short straight hops with small course corrections, on stiff, slightly under-damped springs (quick
    overshoot, then lock on), leaves a thin blue streak on the dash and buzzes while it holds; drawing the
@@ -18,6 +21,7 @@
    Canvas only, no dependencies. Off for reduced motion; content never waits on it (3s failsafe). */
 
 const BLUE = "76, 141, 255";
+const CYAN = "45, 125, 255"; // hologram glow of the contact globe (kept dim: a glow, not a light)
 const PAD = 6;
 const HOLD = 0.12; // s, pause on a finished frame before the content appears
 const FADE = 0.55; // s, frame fade-out
@@ -40,7 +44,7 @@ const TAGS = [ // frame tag per element role, most specific first
 ];
 // spring stiffness per mode (rad/s) and damping ratio (<1 overshoots a little, 1 = no overshoot)
 // building modes (travel, drag, hold, type) are nanobot-stiff; the rest keep the original lazy glide
-const OMEGA = { wait: 4, wander: 1.6, swarm: 5, travel: 30, drag: 30, hold: 20, type: 26, idle: 3, orbit: 3.2, leave: 2.2 };
+const OMEGA = { wait: 4, wander: 1.6, swarm: 5, travel: 30, drag: 30, hold: 20, type: 26, idle: 3, orbit: 4.5, leave: 2.2 };
 const ZETA = { travel: 0.58, drag: 0.9, hold: 0.75 }; // damping ratio; anything not listed is critically damped (1)
 const HOPS = { travel: [0.4, 0.6, 0] }; // darting hops while heading to a job: share of the way (min, max), max pause between hops
 const JITTER = { hold: 4 }; // hover noise while holding a finished frame (px-ish)
@@ -64,6 +68,8 @@ export function initBuilders(reducedMotion) {
   const contact = document.getElementById("contact");
   const ringAnchor = document.querySelector(".contact__title");
   const ringBtn = document.getElementById("email-link");
+  const ringLede = document.querySelector(".contact__lede");
+  const ringActions = document.querySelector(".contact__actions");
   const cap = () => (w < 640 ? 22 : 40); // most cursors on screen at once
   let w = 0, h = 0, dpr = 1, raf = 0, now = 0, off = false;
   let built = 0, heroStarted = false, lastStart = -9, lastJob = null;
@@ -91,7 +97,9 @@ export function initBuilders(reducedMotion) {
     while (crew.length < n) crew.push(cursor(crew.length === 0));
     crew.length = n;
   }
+  let oidSeq = 0;
   function setMode(c, mode, tx, ty) {
+    if (mode === "orbit" && c.mode !== "orbit") c.oid = ++oidSeq; // join order = place on the globe
     c.mode = mode; c.t0 = now;
     if (tx !== undefined) { c.tx = tx; c.ty = ty; }
   }
@@ -206,39 +214,146 @@ export function initBuilders(reducedMotion) {
     crew.forEach((c) => setMode(c, "swarm", w * 0.5 + rand(-70, 70), h * 0.5 + rand(-45, 45)));
   }
 
-  /* ----------------------------------------------------------- contact ring */
-  // Wide screens: a circle in the empty space beside the title. Narrow: an ellipse around the email button.
+  /* ----------------------------------------------------------- contact globe */
+  // Wide screens: a 3D globe in the empty space beside the title. Narrow: a flat ellipse around the email button.
+  const TILT = 0.42; // view tilt (rad) so the poles read as 3D
+  const FOCAL = 9; // perspective strength (in globe radii)
+  let geo = null; // this frame's globe geometry, for the lattice draw
+  let lattice = null; // cached Fibonacci sphere { n, pts, links }
+  let orbitN = 0, reshuffle = -9; // cursors on the globe; when that count last changed
+  const sprite = document.createElement("canvas"); // soft cyan glow dot, drawn additively under each node
+  sprite.width = sprite.height = 64;
+  {
+    const sg = sprite.getContext("2d"), gr = sg.createRadialGradient(32, 32, 0, 32, 32, 32);
+    gr.addColorStop(0, `rgba(${CYAN}, 0.95)`); gr.addColorStop(0.22, `rgba(${CYAN}, 0.36)`); gr.addColorStop(1, `rgba(${CYAN}, 0)`);
+    sg.fillStyle = gr; sg.fillRect(0, 0, 64, 64);
+  }
+  const redSprite = document.createElement("canvas"); // the nucleus glows red
+  redSprite.width = redSprite.height = 64;
+  {
+    const sg = redSprite.getContext("2d"), gr = sg.createRadialGradient(32, 32, 0, 32, 32, 32);
+    gr.addColorStop(0, "rgba(255, 51, 65, 0.7)"); gr.addColorStop(0.25, "rgba(255, 51, 65, 0.22)"); gr.addColorStop(1, "rgba(255, 51, 65, 0)");
+    sg.fillStyle = gr; sg.fillRect(0, 0, 64, 64);
+  }
+  function sphereOf(n) {
+    if (lattice && lattice.n === n) return lattice;
+    const pts = [], ga = Math.PI * (3 - Math.sqrt(5));
+    for (let i = 0; i < n; i++) {
+      const y = 1 - (2 * (i + 0.5)) / n, r = Math.sqrt(1 - y * y), t = i * ga;
+      pts.push([Math.cos(t) * r, y, Math.sin(t) * r]);
+    }
+    const seen = new Set(), links = [];
+    pts.forEach((p, i) => { // each node strut-linked to its 5 nearest: a triangulated, geodesic mesh
+      pts.map((q, j) => [j, (p[0] - q[0]) ** 2 + (p[1] - q[1]) ** 2 + (p[2] - q[2]) ** 2])
+        .filter(([j]) => j !== i).sort((a, b) => a[1] - b[1]).slice(0, 5)
+        .forEach(([j]) => { const k = Math.min(i, j) * 1000 + Math.max(i, j); if (!seen.has(k)) { seen.add(k); links.push([i, j]); } });
+    });
+    return (lattice = { n, pts, links });
+  }
   function ringCentre() {
     if (w >= 980 || !ringBtn) {
-      const r = ringAnchor ? ringAnchor.getBoundingClientRect() : { left: 0, right: w, top: h / 2, bottom: h / 2 };
-      const R = Math.min(150, w * 0.1);
-      return { x: Math.min(w - R - 40, Math.max(r.right + R + 40, w * 0.78)), y: (r.top + r.bottom) / 2, rx: R, ry: R };
+      // measure the words themselves (title, lede, buttons), not their full-width blocks
+      let l = Infinity, r = -Infinity, t = Infinity, b = -Infinity;
+      const add = (q) => { if (!q.width) return; l = Math.min(l, q.left); r = Math.max(r, q.right); t = Math.min(t, q.top); b = Math.max(b, q.bottom); };
+      if (ringAnchor) {
+        const range = document.createRange();
+        [ringAnchor, ringLede].forEach((el) => { if (el) { range.selectNodeContents(el); add(range.getBoundingClientRect()); } });
+        if (ringActions) [...ringActions.children].forEach((el) => add(el.getBoundingClientRect()));
+      }
+      if (r < l) { l = 0; r = w * 0.5; t = b = h / 2; }
+      const R = Math.min(215, w * 0.145);
+      // just right of the longest line, vertically centred on the whole text block
+      return { globe: true, x: clamp(r + R + 70, w * 0.5, w - R - 30), y: (t + b) / 2, r: R };
     }
     const b = ringBtn.getBoundingClientRect();
-    return { x: (b.left + b.right) / 2, y: (b.top + b.bottom) / 2, rx: b.width / 2 + 10, ry: b.height / 2 + 26 };
+    return { globe: false, x: (b.left + b.right) / 2, y: (b.top + b.bottom) / 2, rx: b.width / 2 + 10, ry: b.height / 2 + 26 };
   }
   function setRing(on) {
     if (on === ringOn) return;
     ringOn = on; ringSince = now;
     if (on) {
-      const n = w < 640 ? 14 : 26;
+      const n = w < 640 ? 14 : w < 980 ? 26 : 58;
       for (let i = 0; i < n; i++) {
         const c = cursor();
         c.r = rand(0.9, 1.1);
         crowd.push(c);
-        setTimeout(() => { if (ringOn) setMode(c, "orbit"); }, 600 + i * 45); // stream in, one after another
+        setTimeout(() => { if (ringOn) setMode(c, "orbit"); }, 600 + i * 40); // stream in, one after another
       }
     } else {
       crowd.forEach((c) => { const p = edgePoint(60); setMode(c, "leave", p.x, p.y); });
       crew.forEach((c) => { if (c.mode === "orbit") wander(c); });
+      temps.forEach((c) => { if (c.mode === "orbit") leave(c); });
     }
   }
   function ringTarget(c, i, n) {
-    const { x, y, rx, ry } = ringCentre();
-    const ang = (i / n) * Math.PI * 2 + (now - ringSince) * 0.55;
-    const k = c.r * (1 + 0.04 * Math.sin(now * 2 + i));
-    c.tx = x + Math.cos(ang) * rx * k;
-    c.ty = y + Math.sin(ang) * ry * k;
+    const g = geo || (geo = ringCentre());
+    c.gi = -1; c.depth = 0.8; c.sc = 1;
+    if (!g.globe) {
+      const ang = (i / n) * Math.PI * 2 + (now - ringSince) * 0.55;
+      const k = c.r * (1 + 0.04 * Math.sin(now * 2 + i));
+      c.tx = g.x + Math.cos(ang) * g.rx * k;
+      c.ty = g.y + Math.sin(ang) * g.ry * k;
+      return;
+    }
+    const age = now - ringSince;
+    // the element condenses outward from a tight core, then breathes
+    const R = g.r * (0.3 + 0.7 * easeOut(clamp(age / 2.4, 0, 1))) * (1 + 0.025 * Math.sin(now * 1.7));
+    g.R = R;
+    const [px, py, pz] = sphereOf(n).pts[i];
+    const yaw = age * 0.42, cy = Math.cos(yaw), sy = Math.sin(yaw);
+    const q = project(g, px * cy + pz * sy, py, -px * sy + pz * cy);
+    c.gi = i; c.depth = q.d;
+    c.sc = 0.6 + 0.55 * c.depth;
+    c.tx = q.x - BODY[0] * c.sc; c.ty = q.y - BODY[1] * c.sc; // the arrow's body, not its tip, sits on the node
+  }
+  const BODY = [4, 8]; // centre of the arrow's body, relative to its tip (unscaled px)
+  const node = (c) => [c.x + BODY[0] * (c.sc || 1), c.y + BODY[1] * (c.sc || 1)];
+  function nucleusTarget(c) { // dead centre, slightly larger, breathing
+    c.gi = -1; c.depth = 0.5; c.sc = 1.25 + 0.06 * Math.sin(now * 2.4);
+    c.tx = geo.x - BODY[0] * c.sc; c.ty = geo.y - BODY[1] * c.sc;
+  }
+  function project(g, x, y, z) { // view tilt + perspective; d = 0 far side, 1 near side
+    const y2 = y * Math.cos(TILT) - z * Math.sin(TILT), z2 = y * Math.sin(TILT) + z * Math.cos(TILT);
+    const p = FOCAL / (FOCAL - z2);
+    return { x: g.x + x * g.R * p, y: g.y + y2 * g.R * p, d: clamp((z2 + 1) / 2, 0, 1) };
+  }
+  function drawGlobe(all) { // hologram: core glow, rim light, glowing struts, a glow dot under every node
+    if (!ringOn || !geo || !geo.globe || !geo.R) return;
+    const age = now - ringSince, fade = clamp((age - 1.2) / 1.4, 0, 1);
+    if (!fade) return;
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    const flick = 1 + 0.08 * Math.sin(now * 3.1) + 0.04 * Math.sin(now * 7.3); // faint energy flicker
+    const glow = ctx.createRadialGradient(geo.x, geo.y, 0, geo.x, geo.y, geo.R * 1.5);
+    glow.addColorStop(0, `rgba(${CYAN}, ${0.17 * fade * flick})`);
+    glow.addColorStop(0.55, `rgba(${CYAN}, ${0.08 * fade})`);
+    glow.addColorStop(0.68, `rgba(${CYAN}, ${0.17 * fade})`); // rim light: a soft blue edge makes the sphere read round
+    glow.addColorStop(0.82, `rgba(${CYAN}, ${0.04 * fade})`);
+    glow.addColorStop(1, `rgba(${CYAN}, 0)`);
+    ctx.fillStyle = glow;
+    ctx.fillRect(geo.x - geo.R * 1.6, geo.y - geo.R * 1.6, geo.R * 3.2, geo.R * 3.2);
+    const line = (ax, ay, bx, by, k) => { // a wide faint pass for the bloom, then a thin bright core
+      ctx.strokeStyle = `rgba(${CYAN}, ${k * 0.18})`; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.stroke();
+      ctx.strokeStyle = `rgba(${CYAN}, ${k})`; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(ax, ay); ctx.lineTo(bx, by); ctx.stroke();
+    };
+    ctx.lineCap = "round";
+    const nodes = [];
+    all.forEach((c) => { if (c.mode === "orbit" && c.gi >= 0 && now - c.t0 > 1.2) nodes[c.gi] = c; });
+    if (lattice) lattice.links.forEach(([i, j]) => {
+      const A = nodes[i], B = nodes[j];
+      if (!A || !B) return;
+      line(...node(A), ...node(B), fade * Math.min(A.a, B.a) * (0.07 + 0.42 * ((A.depth + B.depth) / 2) ** 2));
+    });
+    all.forEach((c) => {
+      if (c.mode !== "orbit" || c.a < 0.05) return;
+      const r = (c.nucleus ? 34 : 12 + 22 * (c.depth ?? 0.8)) * (c.nucleus ? 1 + 0.12 * Math.sin(now * 2.4) : 1);
+      ctx.globalAlpha = c.nucleus ? fade * c.a * 0.9 : fade * c.a * (0.35 + 0.65 * (c.depth ?? 0.8));
+      const [nx, ny] = node(c);
+      ctx.drawImage(c.nucleus ? redSprite : sprite, nx - r, ny - r, r * 2, r * 2); // centred on the arrow body, not its tip
+    });
+    ctx.restore();
   }
 
   /* ----------------------------------------------------------- tick */
@@ -311,12 +426,18 @@ export function initBuilders(reducedMotion) {
       if (now - c.t0 > 0.6) setMode(c, "idle");
     }
     if (free(c)) {
-      if (c.temp) { if (now > c.next) leave(c); }
-      else if (ringOn && now - ringSince > 1.4) setMode(c, "orbit");
+      if (ringOn && now - ringSince > 1.4) setMode(c, "orbit"); // everyone free joins the globe
+      else if (c.temp) { if (now > c.next) leave(c); }
       else if (now > c.next) wander(c);
     }
     integrate(c, dt);
-    const target = c.mode === "wait" ? 0 : c.mode === "leave" ? 0 : free(c) ? (c.temp ? 0.7 : 0.4) : c.mode === "orbit" ? 0.8 : 0.95;
+    if (c.mode === "orbit") { // once arrived, lock onto the moving globe node so the shape stays crisp
+      const k = clamp((now - c.t0 - 1.1) / 1.3, 0, 1) * clamp((now - reshuffle) / 1.1, 0.06, 1); // glide when the lattice re-forms
+      c.x += (c.tx - c.x) * k; c.y += (c.ty - c.y) * k;
+      c.vx *= 1 - k; c.vy *= 1 - k;
+    }
+    const target = c.mode === "wait" ? 0 : c.mode === "leave" ? 0 : free(c) ? (c.temp ? 0.7 : 0.4)
+      : c.mode === "orbit" ? (c.nucleus ? 1 : 0.22 + 0.73 * (c.depth ?? 0.8)) : 0.95;
     c.a += (target - c.a) * Math.min(1, dt * 6);
   }
 
@@ -447,12 +568,15 @@ export function initBuilders(reducedMotion) {
     } else {
       // lean slightly into the direction of travel
       ctx.rotate(clamp(c.vx / (BUILDING.has(c.mode) ? 5000 : 4000), -0.25, 0.25));
+      if (c.mode === "orbit" && c.sc) ctx.scale(c.sc, c.sc); // nearer globe nodes are bigger
       ctx.globalAlpha = c.a;
       ctx.beginPath();
       ctx.moveTo(0, 0); ctx.lineTo(0, 16); ctx.lineTo(4.3, 12.3); ctx.lineTo(7, 18.2);
       ctx.lineTo(9.6, 17.1); ctx.lineTo(6.9, 11.2); ctx.lineTo(12, 11.2); ctx.closePath();
-      ctx.fillStyle = c.red ? "#ff3341" : "#f3f3f1";
+      ctx.fillStyle = c.red ? "#ff3341" : c.mode === "orbit" && geo && geo.globe ? "#a9caff" : "#f3f3f1";
+      if (c.mode === "orbit" && geo && geo.globe) { ctx.shadowColor = c.red ? "rgba(255, 51, 65, 0.9)" : `rgba(${CYAN}, 1)`; ctx.shadowBlur = c.red ? 14 : 11; }
       ctx.fill();
+      ctx.shadowBlur = 0;
       ctx.strokeStyle = "rgba(0, 0, 0, 0.55)";
       ctx.lineWidth = 1;
       ctx.stroke();
@@ -467,7 +591,14 @@ export function initBuilders(reducedMotion) {
     last = now;
     if (!heroStarted && !root.classList.contains("intro-active")) heroStart();
     assign();
-    crew.forEach((c, i) => { c.slot = i; if (c.mode === "orbit") ringTarget(c, i, crew.length + crowd.length); step(c, dt); });
+    geo = ringOn ? ringCentre() : null;
+    // on the globe the red lead is the nucleus, not a lattice node
+    const orbiters = crew.concat(crowd, temps).filter((c) => { c.nucleus = c.red && c.mode === "orbit" && geo && geo.globe; return c.mode === "orbit" && !c.nucleus; })
+      .sort((a, b) => a.oid - b.oid);
+    crew.forEach((c) => { if (c.nucleus) nucleusTarget(c); });
+    if (orbiters.length !== orbitN) { orbitN = orbiters.length; reshuffle = now; }
+    orbiters.forEach((c, i) => ringTarget(c, i, orbiters.length));
+    crew.forEach((c, i) => { c.slot = i; step(c, dt); });
     for (let i = temps.length - 1; i >= 0; i--) {
       const c = temps[i];
       step(c, dt);
@@ -475,7 +606,6 @@ export function initBuilders(reducedMotion) {
     }
     for (let i = crowd.length - 1; i >= 0; i--) {
       const c = crowd[i];
-      if (c.mode === "orbit") ringTarget(c, crew.length + i, crew.length + crowd.length);
       step(c, dt);
       if (c.mode === "leave" && c.a < 0.03) crowd.splice(i, 1);
     }
@@ -486,9 +616,10 @@ export function initBuilders(reducedMotion) {
     ctx.clearRect(0, 0, w, h);
     jobs.forEach((j) => { if (j.state === "drag" || j.state === "built") drawFrame(j); });
     crowd.forEach(drawTrail); temps.forEach(drawTrail); crew.forEach(drawTrail);
-    crowd.forEach(drawCursor);
-    temps.forEach(drawCursor);
-    crew.forEach(drawCursor);
+    const all = [...crowd, ...temps, ...crew];
+    drawGlobe(all);
+    // globe nodes back to front, everything else on top (stable sort keeps the old order)
+    all.sort((a, b) => (a.mode === "orbit" ? a.depth ?? 1 : 2) - (b.mode === "orbit" ? b.depth ?? 1 : 2)).forEach(drawCursor);
     raf = requestAnimationFrame(frame);
   }
 

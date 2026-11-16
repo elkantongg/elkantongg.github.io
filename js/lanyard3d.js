@@ -73,13 +73,22 @@ function paintFace(back, tw, th, img) {
   g.translate(X, y); g.rotate((-4 * Math.PI) / 180);
   g.font = `italic 800 ${7.2 * u}px Inter, sans-serif`;
   g.fillStyle = back ? "#ff3341" : "#c4121f"; g.textAlign = "left";
-  g.fillText(back ? "Scan to" : "Full-stack", 0, 0);
+  g.fillText(back ? "Scan to" : "Experimental", 0, 0);
   g.restore();
-  const big = back ? 24 : 27;
+  const word = back ? "CONNECT" : "BUILDER";
+  let big = back ? 24 : 27;
+  for (;;) { // shrink the big word until it fits the card width
+    g.font = `400 ${big * u}px Anton, Impact, sans-serif`;
+    g.letterSpacing = `${0.01 * big * u}px`;
+    const fits = g.measureText(word).width <= R - X + 0.6 * u;
+    g.letterSpacing = "0px";
+    if (fits || big < 12) break;
+    big *= 0.96;
+  }
   y += 0.6 * u + big * u * 0.8;
   g.font = `400 ${big * u}px Anton, Impact, sans-serif`;
   g.fillStyle = back ? "#ff3341" : ink;
-  spaced(back ? "CONNECT" : "BUILDER", X - 0.6 * u, y, 0.01 * big * u);
+  spaced(word, X - 0.6 * u, y, 0.01 * big * u);
   y += 3.5 * u + big * u * 0.06;
 
   // foot (bottom up)
