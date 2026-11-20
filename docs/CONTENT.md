@@ -37,6 +37,7 @@ Achievements/awards for these projects: TBD (none on résumé).
 
 ## Experience & leadership (timeline, newest first)
 - **2025 – Present** — BSc Information Systems, SMU.
+- **Nov 2026 – Present** — Robot Technical Support Specialist, NCS Group, Singapore (Elkan's words, shortened by Claude): supports deployment, setup and operation of humanoid robots for public-facing events and demos; functional testing, troubleshooting and operational readiness for a robotics deployment project with Changi Airport Group; software updates and programming for reliable robot performance.
 - **Jun 2025 & Jun 2026** — Church Camp Commandant: end-to-end programme planning, logistics and resource allocation for camps serving ~300 participants.
 - **Independent** — Forex Trading & Community Development: analysed FX markets / developed strategies with a trading team; hosted education sessions for ~15 participants; grew a Telegram community to 175 subscribers.
 - **Apr 2023 – Apr 2025** — Field Instructor, Singapore Police Force: led recruit fitness training; previously failing squads reached 100% IPPT pass rate, incl. 20% gold.
